@@ -58,6 +58,28 @@ The team currently publishes **50 new verified issues each month** to the `full`
 
 *Automation characteristics*: the packaging scripts are idempotent, encode their date stamps, and can be re-run to regenerate releases if upstream validation replays occur.
 
+## Implementation Q&A
+
+### What is SWE-fixer and how are Issue–PR pairs extracted?
+The SWE-Fixer team contributed the crawling scripts under `curation/swe_task_crawling/` (`README.md`). Instead of the original SWE-bench heuristic that matched issue IDs by string similarity, SWE-Fixer queries the GitHub GraphQL API for each repo’s closed issues and inspects their timeline events to see which pull request actually closed them (`get_pull_issue_dict.py`). Only issues whose `ClosedEvent` references a specific PR (and fall after the `--cutoff-date`) are emitted, yielding an explicit `pull_number → [issue_numbers]` mapping that feeds `build_dataset.py`. This makes the PR–issue linkage deterministic, supports repositories with nonstandard naming, and allows resumes/retries because the intermediate JSONL files capture every matched pair.
+
+### How are `patch` and `test_patch` separated?
+`build_dataset.py` calls `extract_patches` in `curation/swe_task_crawling/utils.py`, which downloads the PR’s unified diff and parses it with `unidiff.PatchSet`. Each hunk is classified by file path: files whose paths include tokens such as `test`, `tests`, `testing`, or `e2e` are appended to `test_patch`, while every other file is routed to `patch`. This heuristic mirrors the original SWE-bench behavior and ensures the evaluation harness can apply the code fix separately from the tests that assert it.
+
+### How is the base Docker image selected, and are Dockerfiles emitted?
+RepoLaunch inspects repo docs (the `locate_related_file` step) and then asks an LLM to choose a base image from a language-specific allowlist (`launch/launch/agent/base_image.py`, `launch/launch/utilities/language_handlers.py`). For example, Python repos may select from `python:3.6`–`python:3.11`, while Java projects pick among official `openjdk` tags. The agent never writes a Dockerfile; instead it starts a container from the chosen base image, runs the synthesized `setup_commands`, records the `test_commands`, and, upon success, prepares to snapshot the container into an image named `starryzhang/sweb.eval.<arch>.<instance_id>` inside `save_result` (`launch/launch/workflow.py`). The `session.commit` call that performs the actual image commit/push is hook-ready (currently commented for local runs), so the published artifact is the JSON recipe plus the resulting Docker image tag—not a bespoke Dockerfile.
+
+### Does validation ensure Fail-to-Pass (F2P) tests actually fail before patching?
+Yes. `swebench.harness.run_validation` first executes the repository’s test command inside the environment before any patch is applied, storing the pre-patch test map (`LOG_PRE_TEST_OUTPUT`). Only after capturing those failures does it apply the gold patch and rerun the tests, producing a post-patch map. `get_p2p_f2p` then labels a test as `FAIL_TO_PASS` only if it was failing/erroring before and passing afterward, so every F2P entry is grounded in an observed pre-patch failure.
+
+### What does a `full-*.jsonl` line look like?
+`swebench/collect/produce/make_full.py` walks every validated `instance.json` file, ensures both `FAIL_TO_PASS` and `PASS_TO_PASS` arrays are present, normalizes string fields, and writes each instance as a single JSON line. Each record contains:
+- The provenance fields from curation (`repo`, `pull_number`, `issue_numbers`, `base_commit`, `created_at`, `commit_urls`, natural-language `problem_statement`/`hints_text`, and the raw `patch`/`test_patch` payloads).
+- The RepoLaunch outputs (`setup_commands`, `test_cmds`, `base_image`, `log_parser`).
+- Validation metadata (`FAIL_TO_PASS`, `PASS_TO_PASS`, and optionally timing/runtime stats).
+- A computed `difficulty` object summarizing the patch’s number of files/hunks/changed lines (added right before writing).
+This JSONL format is what gets uploaded to Hugging Face (e.g., `full-2025-09-17.jsonl`), so downstream consumers can stream the file line-by-line without extra packaging.
+
 ## Continuous Update Playbook
 - **Cadence**: The team targets a monthly refresh with 50 newly verified issues; raw task crawling can be run more frequently, but releases aggregate across the latest month once validation converges (`README.md`).
 - **Versioning**: Split filenames include ISO-formatted dates, and Docker tags encode repository plus issue identifiers for traceability.
