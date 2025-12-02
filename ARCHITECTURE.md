@@ -82,21 +82,63 @@ The SWE-bench-Live curation pipeline consists of five major stages:
 - `curation/swe_task_crawling/fetch_pulls.py` - Fetches pull requests and associated issues
 - `curation/swe_task_crawling/get_tasks_pipeline.py` - Orchestrates PR collection
 - `swebench/collect/build_dataset.py` - Converts PRs to task instances
+- `swebench/collect/utils.py` - Core extraction utilities
+
+#### SWE-fixer Enhancement
+
+The scripts in `curation/swe_task_crawling/` are provided by the **[SWE-fixer](https://github.com/InternLM/SWE-Fixer)** team, which optimized the original SWE-bench crawling approach. Instead of relying on regex-based string matching to find issue-PR relationships, SWE-fixer uses:
+
+**GraphQL-based Issue-PR Linking**:
+```graphql
+timelineItems {
+  nodes {
+    ... on ClosedEvent {
+      closer {
+        ... on PullRequest {
+          number
+        }
+      }
+    }
+  }
+}
+```
+
+This queries the `ClosedEvent` timeline items of issues to definitively identify which PR closed which issue, providing a **more robust and accurate** approach than searching for keywords like "fixes #123" in PR descriptions.
 
 **Process**:
-1. For each repository, fetch all PRs created after a cutoff date
-2. Identify issue-first pairs (PRs that close specific issues)
-3. Extract from each PR:
+1. For each repository, use GraphQL to fetch all closed issues after a cutoff date
+2. Extract PR-issue relationships from `ClosedEvent` timeline items
+3. Identify issue-first pairs (PRs that close specific issues)
+4. For each valid PR, extract:
    - **Problem statement** from linked issue
    - **Base commit** (SHA before changes)
-   - **Patch** (gold solution)
-   - **Test patch** (test modifications)
-   - **Hints** (additional context from issue comments)
-4. Validate instances:
+   - **Patch** (gold solution - code changes only)
+   - **Test patch** (test file modifications)
+   - **Hints** (additional context from issue comments before first commit)
+5. Validate instances:
    - Must have associated issue
    - Must be merged
    - Must contain valid patch and problem statement
-5. Output: `{repo}-task-instances.jsonl`
+6. Output: `{repo}-task-instances.jsonl`
+
+#### Test Patch Separation
+
+The `extract_patches` function (`swebench/collect/utils.py`) separates test changes from code changes using a path-based heuristic:
+
+```python
+def extract_patches(pull: dict, repo: Repo) -> tuple[str, str]:
+    patch = requests.get(pull["diff_url"]).text
+    patch_test = ""
+    patch_fix = ""
+    for hunk in PatchSet(patch):
+        if any(test_word in hunk.path for test_word in ["test", "tests", "e2e", "testing"]):
+            patch_test += str(hunk)
+        else:
+            patch_fix += str(hunk)
+    return patch_fix, patch_test
+```
+
+**Logic**: Any file path containing "test", "tests", "e2e", or "testing" is classified as a test patch; everything else is the gold solution patch. This ensures the model doesn't see the test changes during evaluation.
 
 **Data Schema**:
 ```json
@@ -139,12 +181,34 @@ locate_related_file → select_base_image → start_bash_session → setup → v
 - Uses pattern matching: `README`, `INSTALL`, `CONTRIBUTING`, `docs/`
 
 **Stage 2: Select Base Image** (`launch/agent/base_image.py`)
-- Determines appropriate Docker base image
-- Considers:
-  - Repository language (Python, JavaScript, Rust, Go, C, etc.)
-  - Operating system requirements (Linux, Windows)
-  - Time-aware version selection (based on `created_at` date)
-- Selects from Ubuntu, Debian, Python official images, or language-specific images
+
+RepoLaunch uses an **LLM-driven approach** to select the most appropriate Docker base image:
+
+**Selection Process**:
+1. **Get candidate images** from language-specific handlers:
+   - Python: `python:3.6` through `python:3.11`
+   - JavaScript: `node:18`, `node:20`, `node:22`
+   - Rust: `rust:1.70` through `rust:1.75`
+   - Java: `openjdk:11`, `openjdk:17`, `openjdk:21`
+   - Go: `golang:1.19` through `golang:1.22`
+   - C/C++: `gcc:11`, `gcc:12`, `ubuntu:20.04`, `ubuntu:22.04`
+
+2. **LLM analyzes repository documentation** (README, installation guides) to determine:
+   - Required language version
+   - System dependencies
+   - OS requirements
+
+3. **LLM selects image** from candidates, wrapping choice in `<image>ubuntu:20.04</image>` tags
+
+4. **Validation**: If selected image not in candidate list, LLM is prompted to try again (up to 5 attempts)
+
+**Important Note**: Docker images created by RepoLaunch are **committed locally** but **not automatically pushed** to remote registries. The code in `launch/workflow.py` (lines 81-94) shows:
+```python
+# Image commit code is currently commented out:
+# session.commit(image_name=key, push=False)
+```
+
+Images are intended to be named with the convention: `starryzhang/sweb.eval.x86_64.{instance_id}` and could be pushed to Docker Hub, but this step is disabled in the current implementation. The evaluation harness can work with either local images or pre-existing remote images from the `starryzhang` namespace.
 
 **Stage 3: Start Bash Session** (`launch/agent/setup.py`)
 - Launches Docker container with selected base image
@@ -234,29 +298,55 @@ Each handler manages:
 
 ### 4. Validation
 
-**Purpose**: Verify that instances can be successfully solved with gold patches
+**Purpose**: Verify that instances can be successfully solved with gold patches and extract test cases
 
 **Components**:
-- `swebench/harness/run_validation.py` - Validates instances
-- `swebench/harness/grading.py` - Extracts pass/fail test cases
+- `swebench/harness/run_validation.py` - Validates instances with pre/post patch testing
+- `swebench/harness/grading.py` - Extracts pass/fail test cases and computes resolution metrics
 
-**Process**:
-1. For each successfully launched instance:
-2. Apply the gold patch to the base commit
-3. Run the test commands from RepoLaunch
-4. Parse test output to identify:
-   - **FAIL_TO_PASS**: Tests that failed before patch, pass after
-   - **PASS_TO_PASS**: Tests that passed both before and after
-5. Only instances with both test categories are kept
-6. Output: Validation logs in `logs/run_validation/{run_id}/`
+**Process** (Critical two-phase testing):
+
+**Phase 1: Pre-Patch Testing** (Lines 159-198 in `run_validation.py`):
+1. Build Docker container with RepoLaunch environment setup
+2. **Run tests WITHOUT applying gold patch** (base commit state)
+3. Parse test output to create `pre_test_map` (test_name → status)
+4. Save to `pre_test_output.txt` and `pre_test_map.json`
+
+**Phase 2: Post-Patch Testing** (Lines 200-267):
+1. Apply the gold patch to the container
+2. **Run tests WITH gold patch applied**
+3. Parse test output to create `post_test_map` (test_name → status)
+4. Save to `test_output.txt` and `post_test_map.json`
+
+**Test Classification** (using `get_p2p_f2p` function):
+```python
+def get_p2p_f2p(pre_test_map, post_test_map):
+    for test, pre_status in pre_test_map.items():
+        post_status = post_test_map.get(test)
+        
+        if is_fail(pre_status) and is_pass(post_status):
+            fail2pass.append(test)  # ✅ FAIL_TO_PASS
+        elif is_pass(pre_status) and is_pass(post_status):
+            pass2pass.append(test)  # ✅ PASS_TO_PASS
+```
+
+**Key Validation**: This two-phase approach **confirms**:
+- **FAIL_TO_PASS tests actually fail** before the patch (preventing false positives)
+- **PASS_TO_PASS tests pass** both before and after (maintenance verification)
+- The gold patch successfully resolves the issue
+
+**Filtering**:
+- Only instances with **both** FAIL_TO_PASS and PASS_TO_PASS tests are kept
+- Instances where F2P tests don't actually fail in pre-patch testing are rejected
+- Output: `instance.json` with extracted test lists in `logs/run_validation/{run_id}/gold/{instance_id}/`
 
 **Test Output Parsing**:
 - Language-specific parsers in `swebench/harness/log_parsers/`
-- Python: pytest output parsing
+- Python: pytest output parsing (looks for `PASSED`, `FAILED`, `ERROR` markers)
 - JavaScript: Jest/Mocha output parsing
 - Rust: cargo test output parsing
 - Go: go test output parsing
-- Generic: regex-based parsing for standard test frameworks
+- Each parser extracts `test_name → status` mapping from detailed test output
 
 ### 5. Production Dataset Creation
 
@@ -270,9 +360,53 @@ Each handler manages:
 **Process**:
 
 **Full Dataset**:
-1. Collect all validated instances
-2. Merge with previous month's data
-3. Output: `datasets/full-{date}.jsonl`
+1. Collect all validated instances from `logs/run_validation/{run_id}/gold/*/instance.json`
+2. Process each instance with:
+   - Convert numeric fields to strings (`pull_number`, `issue_numbers`)
+   - Add `difficulty` metrics computed from patch using `unidiff`:
+     ```python
+     difficulty = {
+         "files": number_of_files_changed,
+         "hunks": number_of_hunks,
+         "lines": number_of_lines_added_or_removed
+     }
+     ```
+3. Merge with previous month's data
+4. Output: `datasets/full-{date}.jsonl`
+
+**Full Dataset Schema** (from `swebench/collect/produce/make_full.py`):
+```json
+{
+  "instance_id": "owner__repo-123",
+  "repo": "owner/repo",
+  "pull_number": "123",              // String (converted from int)
+  "issue_numbers": ["456", "789"],   // Array of strings
+  "base_commit": "abc123def...",
+  "patch": "diff --git a/...",       // Gold solution (code only)
+  "test_patch": "diff --git a/...",  // Test changes
+  "problem_statement": "Issue description...",
+  "hints_text": "Additional context...",
+  "created_at": "2024-05-01T12:00:00Z",
+  "FAIL_TO_PASS": [                  // Tests that must pass
+    "tests/test_feature.py::test_case_1",
+    "tests/test_feature.py::test_case_2"
+  ],
+  "PASS_TO_PASS": [                  // Tests that must remain passing
+    "tests/test_other.py::test_existing_1",
+    "tests/test_other.py::test_existing_2"
+  ],
+  "difficulty": {                    // Patch complexity metrics
+    "files": 3,
+    "hunks": 5,
+    "lines": 42
+  }
+}
+```
+
+**Critical Fields**:
+- `FAIL_TO_PASS`: Tests that fail on base commit, must pass after fix (resolution metric)
+- `PASS_TO_PASS`: Tests that pass on base commit, must still pass after fix (maintenance metric)
+- These are populated during validation and are **required** for a complete dataset entry
 
 **Lite Dataset** (For leaderboard evaluation):
 1. Sample 50 high-quality instances per month
@@ -436,6 +570,209 @@ python -m swebench.harness.run_evaluation \
 │  • lite-{date}.jsonl (50/month)     │
 │  • verified-{date}.jsonl (filtered) │
 └─────────────────────────────────────┘
+```
+
+## Frequently Asked Questions
+
+### Q1: What is SWE-fixer and how does it help with issue-PR pair extraction?
+
+**SWE-fixer** is a toolkit from the [InternLM team](https://github.com/InternLM/SWE-Fixer) that provides optimized GitHub data collection scripts. SWE-bench-Live's `curation/swe_task_crawling/` scripts are based on SWE-fixer's approach.
+
+**Key Innovation**: Instead of the original SWE-bench's regex-based string matching (looking for "fixes #123" patterns in PR text), SWE-fixer uses **GitHub's GraphQL API** to query the issue timeline:
+
+```graphql
+timelineItems {
+  nodes {
+    ... on ClosedEvent {
+      closer {
+        ... on PullRequest {
+          number
+        }
+      }
+    }
+  }
+}
+```
+
+This directly queries which PR closed which issue through the `ClosedEvent` relationship, providing **definitive linkage** rather than heuristic matching. This approach is:
+- More accurate (no false positives from similar text)
+- More complete (catches PRs that don't use keywords)
+- More efficient (single GraphQL query vs. multiple REST calls)
+
+### Q2: How does SWE-bench-Live separate test_patch from patch for a given PR?
+
+The separation happens in `swebench/collect/utils.py` using the `extract_patches` function with a **path-based heuristic**:
+
+```python
+def extract_patches(pull: dict, repo: Repo) -> tuple[str, str]:
+    patch = requests.get(pull["diff_url"]).text
+    patch_test = ""
+    patch_fix = ""
+    for hunk in PatchSet(patch):
+        if any(test_word in hunk.path for test_word in ["test", "tests", "e2e", "testing"]):
+            patch_test += str(hunk)
+        else:
+            patch_fix += str(hunk)
+    return patch_fix, patch_test
+```
+
+**Logic**:
+1. Downloads the complete diff from GitHub
+2. Parses it using `unidiff` library into individual hunks (file changes)
+3. Checks each file path for test-related keywords: `["test", "tests", "e2e", "testing"]`
+4. Classifies as:
+   - **test_patch**: Any file containing test keywords → shown to evaluation harness to apply tests
+   - **patch**: Everything else → the gold solution that models must reproduce
+
+This ensures models don't see the test changes during problem-solving, maintaining evaluation integrity.
+
+### Q3: How does RepoLaunch select a base Docker image? Are images pushed to a container registry?
+
+**Selection Process** (LLM-driven):
+
+1. **Language Handler provides candidates**: Each language has a predefined list of suitable base images:
+   - Python: `python:3.6` through `python:3.11`
+   - JavaScript: `node:18`, `node:20`, `node:22`
+   - Rust: `rust:1.70-1.75`, etc.
+
+2. **LLM analyzes repository**: The `select_base_image` agent (`launch/agent/base_image.py`) reads repository documentation (README, installation guides) and selects the most appropriate image based on:
+   - Required language version
+   - System dependencies mentioned
+   - Build tools needed
+
+3. **Format**: LLM responds with `<image>python:3.9</image>` tag
+
+4. **Validation**: Selection must be from candidate list (retries up to 5 times if not)
+
+**Container Registry Publishing**:
+
+Images are **NOT automatically pushed** to remote registries. The code in `launch/workflow.py` lines 81-94 shows:
+
+```python
+# Docker image commit is currently COMMENTED OUT:
+# try:
+#     session.commit(image_name=key, push=False)
+#     logger.info(f"Image {key} committed successfully.")
+# except Exception as e:
+#     logger.error(f"Failed to commit image: {e}")
+```
+
+**Intended naming convention**: `starryzhang/sweb.eval.x86_64.{instance_id}`
+
+**Current behavior**: 
+- Images are built and used locally during RepoLaunch
+- Not committed as Docker images after successful setup
+- Evaluation harness can reference pre-existing images from `starryzhang` namespace if they exist
+- Setup commands are saved and can recreate environments from base images
+
+### Q4: Does SWE-bench-Live validate that F2P tests fail before the gold patch is applied?
+
+**Yes!** This is a critical feature to prevent false positives. The validation process in `swebench/harness/run_validation.py` uses **two-phase testing**:
+
+**Phase 1: Pre-Patch Testing** (lines 159-198):
+```python
+# 1. Run tests WITHOUT gold patch (base commit state)
+pre_test_output, timed_out, total_runtime = exec_run_with_timeout(
+    container, "/bin/bash /eval.sh", timeout
+)
+
+# 2. Parse test results
+pre_test_map, found = get_logs_eval(test_spec, pre_test_output_path)
+# pre_test_map = {"tests/test_x.py::test_a": "FAILED", ...}
+```
+
+**Phase 2: Post-Patch Testing** (lines 200-267):
+```python
+# 1. Apply gold patch
+applied_patch = container.exec_run(f"git apply {DOCKER_PATCH}")
+
+# 2. Run tests WITH gold patch applied
+test_output, timed_out, total_runtime = exec_run_with_timeout(
+    container, "/bin/bash /eval.sh", timeout
+)
+
+# 3. Parse test results
+post_test_map, found = get_logs_eval(test_spec, test_output_path)
+# post_test_map = {"tests/test_x.py::test_a": "PASSED", ...}
+```
+
+**Comparison** (`get_p2p_f2p` function, lines 72-95):
+```python
+for test, pre_status in pre_test_map.items():
+    post_status = post_test_map.get(test)
+    
+    if is_fail(pre_status) and is_pass(post_status):
+        fail2pass.append(test)  # ✅ Confirmed F2P
+    elif is_pass(pre_status) and is_pass(post_status):
+        pass2pass.append(test)  # ✅ Confirmed P2P
+```
+
+**Result**: Only tests that **actually fail** before the patch and **pass** after are included in FAIL_TO_PASS. This guarantees the gold patch truly resolves the issue.
+
+### Q5: What is the data format for full-*.jsonl artifacts?
+
+The `full-{date}.jsonl` file (produced by `swebench/collect/produce/make_full.py`) contains one JSON object per line with this schema:
+
+```json
+{
+  "instance_id": "owner__repo-123",
+  "repo": "owner/repo",
+  "pull_number": "123",              // String (converted from int)
+  "issue_numbers": ["456"],          // Array of strings
+  "base_commit": "abc123def...",
+  "patch": "diff --git a/file.py...",
+  "test_patch": "diff --git a/test_file.py...",
+  "problem_statement": "Description of the issue...",
+  "hints_text": "Additional context from comments...",
+  "created_at": "2024-05-01T12:00:00Z",
+  "FAIL_TO_PASS": [
+    "tests/test_module.py::test_function_a",
+    "tests/test_module.py::test_function_b"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_other.py::test_existing_1",
+    "tests/test_other.py::test_existing_2"
+  ],
+  "difficulty": {
+    "files": 3,
+    "hunks": 5,
+    "lines": 42
+  }
+}
+```
+
+**Key Field Details**:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `instance_id` | string | Unique identifier: `{owner}__{repo}-{pr_number}` |
+| `repo` | string | Repository full name |
+| `pull_number` | string | PR number (converted to string) |
+| `issue_numbers` | string[] | Associated issue numbers (converted to strings) |
+| `base_commit` | string | Git SHA to checkout before applying patch |
+| `patch` | string | Gold solution diff (code changes only, no tests) |
+| `test_patch` | string | Test file changes (to verify solution works) |
+| `problem_statement` | string | Issue description from GitHub |
+| `hints_text` | string | Comments from issue thread before first commit |
+| `created_at` | string | ISO timestamp of issue/PR creation |
+| `FAIL_TO_PASS` | string[] | Test names that fail before patch, pass after |
+| `PASS_TO_PASS` | string[] | Test names that pass both before and after |
+| `difficulty` | object | Patch complexity: files changed, hunks, lines modified |
+
+**Critical Requirements**:
+- Both `FAIL_TO_PASS` and `PASS_TO_PASS` must be non-empty
+- These fields are populated during validation phase
+- Instances missing these fields were filtered out (couldn't validate with gold patch)
+
+**Difficulty Calculation** (using `unidiff` library):
+```python
+patch = PatchSet(diff_text)
+difficulty = {
+    "files": len(patch),  # Number of files changed
+    "hunks": sum(len(f) for f in patch),  # Number of change hunks
+    "lines": sum(1 for f in patch for h in f for l in h 
+                 if l.is_added or l.is_removed)  # Lines added/removed
+}
 ```
 
 ## Configuration and Extensibility
