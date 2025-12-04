@@ -172,6 +172,12 @@ This separation is critical because:
 
 **RepoLaunch** is the **core innovation** of SWE-bench-Live. It is an LLM-based agentic tool that automates the creation of testable containerized environments for any GitHub repository. This addresses the major bottleneck in SWE-bench where environment setup was manual.
 
+#### Warning
+
+OpenAI's completions endpoint is supported, but OpenAI's responses endpoint is not yet supported. The gpt-5.1* family is only exposed through OpenAI’s new “Responses” interface; LangChain’s ChatOpenAI client (which RepoLaunch uses in launch/utilities/llm.py) still calls the classic /v1/chat/completions endpoint. When you ask that endpoint for gpt-5.1-codex, OpenAI returns a 404 “model not found”.
+
+If you really need to use the gpt-5.1 models, you’d have to swap out LangChain’s ChatOpenAI client for the new Responses client (which isn’t implemented in RepoLaunch today).
+
 #### RepoLaunch Architecture
 
 **Workflow Graph** (defined in `launch/launch/workflow.py`):
