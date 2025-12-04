@@ -227,6 +227,10 @@ START → locate_related_file → select_base_image → start_bash_session → s
      - Iterates until tests can run successfully
    - Language-specific handlers provide guidance for different ecosystems
 
+   - **Timeouts**:
+     - Each setup command issued via the Docker runtime has a 5-minute timeout; commands that exceed this limit are interrupted and marked as exit code `124`.
+     - The overall setup loop aborts if more than 10 minutes elapse (`TimeoutError("Reached global timeout of 10 minutes")`), guaranteeing containers do not run indefinitely.
+
 3. **Verification Agent** (`launch/agent/verify.py`):
    - Verifies that the environment is correctly set up
    - Runs test commands and checks for proper test output
@@ -267,6 +271,11 @@ The `AgentState` (defined in `launch/agent/state.py`) tracks:
   - Base image selected
   - Success/failure status
 - Docker images: `{namespace}/sweb.eval.{arch}.{instance_id}`
+
+**Filtering Long-Running Instances**:
+- When a Stage 3 run times out for a particular `instance_id`, add that ID to `curation/output/timeouts.txt`.
+- Before launching RepoLaunch again, run `python curation/filter_timeouts.py --output curation/output/raw_tasks.filtered.jsonl` and use the filtered JSONL when generating the Stage 3 manifest.
+- This prevents repeatedly attempting instances that are known to exceed the time budget.
 
 **Export**: `launch/to_swebench.py` converts RepoLaunch results to SWE-bench-Live instance format
 
