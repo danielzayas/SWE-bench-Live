@@ -124,7 +124,20 @@ fi
 
 # Count tokens to determine which token IDs to use
 TOKEN_COUNT=$(wc -l < "$TOKEN_FILE" | tr -d ' ')
-TOKEN_IDS=($(seq 0 $((TOKEN_COUNT-1))))
+TOKEN_IDS=()
+for token_id in $(seq 0 $((TOKEN_COUNT-1))); do
+    repo_list_file="$OUTPUT_DIR/token-${token_id}.txt"
+    if [[ -s "$repo_list_file" ]]; then
+        TOKEN_IDS+=($token_id)
+    else
+        echo "⚠️  Skipping token ID $token_id (no repositories assigned)"
+    fi
+done
+
+if [[ ${#TOKEN_IDS[@]} -eq 0 ]]; then
+    echo "✅ No repositories assigned after splitting; nothing to do."
+    exit 0
+fi
 
 echo "🎯 Will use token IDs: ${TOKEN_IDS[*]}"
 
