@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Iterable
 
 ARCH = "x86_64"
-NAMESPACE = "starryzhang"
+NAMESPACE = "danielzayas"
 
 
 def load_result(instance_folder: Path) -> tuple[dict | None, dict | None]:

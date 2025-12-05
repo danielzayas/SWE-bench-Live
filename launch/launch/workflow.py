@@ -82,7 +82,7 @@ def save_result(state: AgentState) -> dict:
         logger.info("Setup completed successfully, now commit into swebench image.")
 
         ARCH = "x86_64"
-        NAMESPACE = "starryzhang"
+        NAMESPACE = "danielzayas"
 
         key = f"sweb.eval.{ARCH}.{instance_id.lower()}"
         key = f"{NAMESPACE}/{key}".replace("__", "_1776_")
