@@ -834,6 +834,9 @@ SPECS_ASTROID = {
     ]
 }
 
+SPECS_ASTROID["none"] = SPECS_ASTROID["3.0"]
+SPECS_ASTROID["None"] = SPECS_ASTROID["3.0"]
+
 SPECS_MARSHMALLOW = {
     k: {
         "python": "3.9",

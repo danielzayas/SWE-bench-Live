@@ -189,6 +189,7 @@ def make_test_spec(
     instance_id = instance[KEY_INSTANCE_ID]
     repo = instance["repo"]
     version = instance.get("version", "none")
+    instance["version"] = version
     base_commit = instance["base_commit"]
     problem_statement = instance.get("problem_statement")
     hints_text = instance.get("hints_text")  # Unused
