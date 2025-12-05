@@ -1,0 +1,15 @@
+{
+  "llm_provider_name": "OpenAI",
+  "print_to_console": true,
+  "model_config": {
+    "model_name": "gpt-4.1-mini",
+    "temperature": 0.0
+  },
+  "workspace_root": "launch/workspaces/asteroid-stage3/",
+  "dataset": "curation/output/asteroid_stage3_tasks.jsonl",
+  "instance_id": null,
+  "first_N_repos": -1,
+  "max_workers": 1,
+  "overwrite": false
+}
+
