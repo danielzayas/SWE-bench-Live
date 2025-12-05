@@ -265,11 +265,9 @@ The `AgentState` (defined in `launch/agent/state.py`) tracks:
 - **Docker Image Committing**: Successful setups are committed to Docker images for reuse
 
 **Output**: 
-- `result.json` files for each instance containing:
-  - Setup commands used
-  - Test commands identified
-  - Base image selected
-  - Success/failure status
+- `launch/workspaces/<run_id>/<instance_id>/` directories containing:
+  - `result.json` (setup/test command log, base image, completion flag)
+  - The initial `instance.json` captured immediately after RepoLaunch finishes
 - Docker images: `{namespace}/sweb.eval.{arch}.{instance_id}`
 
 **Filtering Long-Running Instances**:
@@ -335,7 +333,9 @@ def get_p2p_f2p(pre_test_map, post_test_map):
 - Go: go test output parsing
 - Each parser extracts `test_name → status` mapping from detailed test output
 
-**Output**: Validation logs with test results for each instance, including `pre_test_map.json` and `post_test_map.json`. Ouput `instance.json` with extracted test lists in `logs/run_validation/{run_id}/gold/{instance_id}/`.
+**Output**: 
+- Validation logs with test results for each instance, including `pre_test_map.json` and `post_test_map.json`, plus the **updated** `instance.json` (with FAIL_TO_PASS/PASS_TO_PASS) in `logs/run_evaluation/{run_id}/gold-stage3/<instance_id>/`.
+- `launch/to_swebench.py --instance_root logs/run_evaluation/{run_id}/gold-stage3 --result_root launch/workspaces/{stage3_run_id}` merges the Stage 4 `instance.json` files with the Stage 3 `result.json` metadata and emits the final SWE-bench-Live JSONL (e.g., `gold/{run_id}.jsonl`).
 
 ### Stage 5: Dataset Production
 
