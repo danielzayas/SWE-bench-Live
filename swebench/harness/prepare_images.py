@@ -74,6 +74,10 @@ def main(
         force_rebuild (bool): Whether to force rebuild all images.
         open_file_limit (int): Open file limit.
     """
+    # Normalize namespace: treat empty string as no namespace
+    if namespace == "":
+        namespace = None
+
     # Set open file limit
     try:
         import resource
