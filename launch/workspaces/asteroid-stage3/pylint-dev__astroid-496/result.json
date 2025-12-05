@@ -1,0 +1,23 @@
+{
+  "instance_id": "pylint-dev__astroid-496",
+  "base_image": "python:3.7",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest --pyargs astroid",
+    "pip install pytest",
+    "pytest --pyargs astroid",
+    "coverage run -m pytest --pyargs astroid",
+    "pip install coverage",
+    "coverage run -m pytest --pyargs astroid",
+    "python -m unittest discover -p \"unittest*.py\" astroid/tests",
+    "pip install -e ."
+  ],
+  "test_commands": [
+    "pytest -rA --pyargs astroid"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

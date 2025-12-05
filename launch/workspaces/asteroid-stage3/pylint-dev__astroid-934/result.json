@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-934",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -e .",
+    "head -40 setup.py",
+    "pip install .",
+    "pip install -r requirements_test.txt",
+    "pip install pytest",
+    "pip install -r requirements_test_brain.txt",
+    "pip install -r requirements_test_pre_commit.txt",
+    "pip install black",
+    "pip install black --no-deps --force-reinstall",
+    "pip install -r requirements_test_min.txt && pip install -r requirements_test_brain.txt && pip install -e . && pytest",
+    "pip install -e .",
+    "python setup.py develop",
+    "pip install . && pytest",
+    "find . -name \"__pycache__\" -exec rm -rf {} + && pytest --cache-clear",
+    "pip uninstall -y typed-ast && pytest --cache-clear",
+    "pip install -U pytest && pytest --cache-clear",
+    "pip install -U pytest pluggy py && pytest --cache-clear",
+    "pip uninstall -y pytest && pip install pytest && pytest --cache-clear",
+    "pip uninstall -y pytest && pip install --index-url https://pypi.org/simple pytest && pytest --cache-clear"
+  ],
+  "test_commands": [
+    "pytest -rA tests -m \"not acceptance\""
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

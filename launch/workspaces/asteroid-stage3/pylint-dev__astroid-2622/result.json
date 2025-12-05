@@ -1,0 +1,18 @@
+{
+  "instance_id": "pylint-dev__astroid-2622",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "cat requirements_dev.txt",
+    "pip install -r requirements_minimal.txt",
+    "pip install -e .",
+    "pip install astroid==4.0.2",
+    "pip install astroid",
+    "pip install -e ."
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

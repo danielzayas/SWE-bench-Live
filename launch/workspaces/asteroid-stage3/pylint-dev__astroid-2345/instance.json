@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "dc13d5b66cec53b26b3c04df07f14724588a09a6",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/8bd53f0ed71058981cf0bb37ba41511ce77f199b"
+  ],
+  "created_at": "2023-12-12T05:18:57Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-2345",
+  "issue_numbers": [
+    2071
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 7b49fdf5b3..f0940c60d0 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -12,6 +12,11 @@ Release date: TBA\n \n   Refs pylint-dev/pylint#9193\n \n+* Add ``__main__`` as a possible inferred value for ``__name__`` to improve\n+  control flow inference around ``if __name__ == \"__main__\":`` guards.\n+\n+  Closes #2071\n+\n \n What's New in astroid 3.0.2?\n ============================\ndiff --git a/astroid/nodes/scoped_nodes/scoped_nodes.py b/astroid/nodes/scoped_nodes/scoped_nodes.py\nindex e8b1aef4f1..2d492f1b64 100644\n--- a/astroid/nodes/scoped_nodes/scoped_nodes.py\n+++ b/astroid/nodes/scoped_nodes/scoped_nodes.py\n@@ -41,7 +41,15 @@\n from astroid.interpreter.dunder_lookup import lookup\n from astroid.interpreter.objectmodel import ClassModel, FunctionModel, ModuleModel\n from astroid.manager import AstroidManager\n-from astroid.nodes import Arguments, Const, NodeNG, Unknown, _base_nodes, node_classes\n+from astroid.nodes import (\n+    Arguments,\n+    Const,\n+    NodeNG,\n+    Unknown,\n+    _base_nodes,\n+    const_factory,\n+    node_classes,\n+)\n from astroid.nodes.scoped_nodes.mixin import ComprehensionScope, LocalsDictNodeNG\n from astroid.nodes.scoped_nodes.utils import builtin_lookup\n from astroid.nodes.utils import Position\n@@ -346,6 +354,8 @@ def getattr(\n \n         if name in self.special_attributes and not ignore_locals and not name_in_locals:\n             result = [self.special_attributes.lookup(name)]\n+            if name == \"__name__\":\n+                result.append(const_factory(\"__main__\"))\n         elif not ignore_locals and name_in_locals:\n             result = self.locals[name]\n         elif self.package:\n",
+  "problem_statement": "Should infer more values for `== __name__` (possibly other dunders)\n### Steps to reproduce\r\n```python\r\n>>> n = extract_node(\"if __name__ == '__main__':  ...\")\r\n>>> n.test.inferred()\r\n[<Const.bool l.None at 0x10baadf90>]\r\n>>> n.test.inferred()[0]\r\n<Const.bool l.None at 0x10c71eb50>\r\n>>> n.test.inferred()[0].value\r\nFalse\r\n```\r\n### Current behavior\r\n1 inferred value\r\n\r\n### Expected behavior\r\n2 inferred values (True, False)\r\n\r\n### `python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"` output\r\n2.16.0dev0\r\n\r\n### More info\r\nInspired by pylint-dev/pylint#8167\n",
+  "pull_number": 2345,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/test_scoped_nodes.py b/tests/test_scoped_nodes.py\nindex 1bc5af78b6..995f0428d9 100644\n--- a/tests/test_scoped_nodes.py\n+++ b/tests/test_scoped_nodes.py\n@@ -79,9 +79,11 @@ def setUp(self) -> None:\n \n class ModuleNodeTest(ModuleLoader, unittest.TestCase):\n     def test_special_attributes(self) -> None:\n-        self.assertEqual(len(self.module.getattr(\"__name__\")), 1)\n+        self.assertEqual(len(self.module.getattr(\"__name__\")), 2)\n         self.assertIsInstance(self.module.getattr(\"__name__\")[0], nodes.Const)\n         self.assertEqual(self.module.getattr(\"__name__\")[0].value, \"data.module\")\n+        self.assertIsInstance(self.module.getattr(\"__name__\")[1], nodes.Const)\n+        self.assertEqual(self.module.getattr(\"__name__\")[1].value, \"__main__\")\n         self.assertEqual(len(self.module.getattr(\"__doc__\")), 1)\n         self.assertIsInstance(self.module.getattr(\"__doc__\")[0], nodes.Const)\n         self.assertEqual(\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/dc13d5b66cec53b26b3c04df07f14724588a09a6"
+}

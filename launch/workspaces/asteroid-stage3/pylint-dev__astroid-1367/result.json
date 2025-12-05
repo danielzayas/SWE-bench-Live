@@ -1,0 +1,16 @@
+{
+  "instance_id": "pylint-dev__astroid-1367",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "python3 -m venv venv",
+    ". venv/bin/activate && python -m pip install --upgrade pip setuptools wheel && pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e .",
+    ". venv/bin/activate && pip install setuptools==58.0.0 && pip install -e .",
+    ". venv/bin/activate && pytest"
+  ],
+  "test_commands": [
+    ". venv/bin/activate && pytest -rA tests/"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

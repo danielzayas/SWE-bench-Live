@@ -1,0 +1,32 @@
+{
+  "instance_id": "pylint-dev__astroid-629",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "pip install -e .",
+    "pytest astroid/tests",
+    "pip install pytest",
+    "pytest astroid/tests",
+    "pip install lazy-object-proxy numpy attr typed_ast python-dateutil six wrapt coverage",
+    "pip install lazy-object-proxy numpy attr python-dateutil six wrapt coverage",
+    "pip install -e .",
+    "pytest astroid/tests",
+    "grep -A 10 'install_requires' setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -U pytest",
+    "pip install pytest==6.2.5",
+    "pip install pytest==4.0.1",
+    "pip install atomicwrites",
+    "pip install pytest",
+    "pip install -e .",
+    "pytest astroid/tests",
+    "pip install lazy-object-proxy numpy attr typed_ast python-dateutil six wrapt coverage",
+    "apt-get update && apt-get install -y build-essential python3.8-dev",
+    "apt-get install -y libpython3.8-dev"
+  ],
+  "test_commands": [
+    "pytest -v -rA astroid/tests"
+  ],
+  "duration": 2,
+  "completed": true,
+  "exception": null
+}

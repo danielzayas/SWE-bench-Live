@@ -1,0 +1,16 @@
+{
+  "instance_id": "pylint-dev__astroid-616",
+  "base_image": "python:3.7",
+  "setup_commands": [
+    "pip install -e .",
+    "pytest astroid",
+    "pip install pytest",
+    "pytest astroid"
+  ],
+  "test_commands": [
+    "pytest -rA astroid"
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

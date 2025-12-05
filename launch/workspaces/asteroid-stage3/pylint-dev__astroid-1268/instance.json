@@ -1,0 +1,22 @@
+{
+  "all_hints_text": "Thank you for opening the issue.\nI don't believe `Unknown().as_string()` is ever called regularly. AFAIK it's only used during inference. What should the string representation of an `Unknown` node be? So not sure this needs to be addressed.\nProbably just `'Unknown'`.\nIt's mostly only a problem when we do something like this:\n\n```python\ninferred = infer(node)\nif inferred is not Uninferable:\n    if inferred.as_string().contains(some_value):\n        ...\n```\nSo for the most part, as long as it doesn't crash we're good.\n\n",
+  "base_commit": "ce5cbce5ba11cdc2f8139ade66feea1e181a7944",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/eb3b3a21ff08ca50fb3abbaf4b5229f923596caf",
+    "https://github.com/pylint-dev/astroid/commit/81fbae69befe04663f433ba471662aee90951aa1",
+    "https://github.com/pylint-dev/astroid/commit/9b6ebb18f75f49da85fd3543b71ed532911b1ede"
+  ],
+  "created_at": "2021-11-21T16:15:23Z",
+  "hints_text": "Thank you for opening the issue.\nI don't believe `Unknown().as_string()` is ever called regularly. AFAIK it's only used during inference. What should the string representation of an `Unknown` node be? So not sure this needs to be addressed.\nProbably just `'Unknown'`.\nIt's mostly only a problem when we do something like this:\n\n```python\ninferred = infer(node)\nif inferred is not Uninferable:\n    if inferred.as_string().contains(some_value):\n        ...\n```\nSo for the most part, as long as it doesn't crash we're good.\n\n",
+  "instance_id": "pylint-dev__astroid-1268",
+  "issue_numbers": [
+    1264
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 0f047d393c..944b76f91c 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -8,6 +8,10 @@ Release date: TBA\n \n * Always treat ``__class_getitem__`` as a classmethod.\n \n+* Add missing ``as_string`` visitor method for ``Unknown`` node.\n+\n+  Closes #1264\n+\n \n What's New in astroid 2.8.6?\n ============================\ndiff --git a/astroid/nodes/as_string.py b/astroid/nodes/as_string.py\nindex 427ccc151e..bc8dab1c16 100644\n--- a/astroid/nodes/as_string.py\n+++ b/astroid/nodes/as_string.py\n@@ -36,6 +36,7 @@\n         MatchSingleton,\n         MatchStar,\n         MatchValue,\n+        Unknown,\n     )\n \n # pylint: disable=unused-argument\n@@ -643,6 +644,9 @@ def visit_property(self, node):\n     def visit_evaluatedobject(self, node):\n         return node.original.accept(self)\n \n+    def visit_unknown(self, node: \"Unknown\") -> str:\n+        return str(node)\n+\n \n def _import_string(names):\n     \"\"\"return a list of (name, asname) formatted as a string\"\"\"\n",
+  "problem_statement": "'AsStringVisitor' object has no attribute 'visit_unknown'\n```python\r\n>>> import astroid\r\n>>> astroid.nodes.Unknown().as_string()\r\nTraceback (most recent call last):\r\n  File \"<stdin>\", line 1, in <module>\r\n  File \"/Users/tusharsadhwani/code/marvin-python/venv/lib/python3.9/site-packages/astroid/nodes/node_ng.py\", line 609, in as_string\r\n    return AsStringVisitor()(self)\r\n  File \"/Users/tusharsadhwani/code/marvin-python/venv/lib/python3.9/site-packages/astroid/nodes/as_string.py\", line 56, in __call__\r\n    return node.accept(self).replace(DOC_NEWLINE, \"\\n\")\r\n  File \"/Users/tusharsadhwani/code/marvin-python/venv/lib/python3.9/site-packages/astroid/nodes/node_ng.py\", line 220, in accept\r\n    func = getattr(visitor, \"visit_\" + self.__class__.__name__.lower())\r\nAttributeError: 'AsStringVisitor' object has no attribute 'visit_unknown'\r\n>>> \r\n```\r\n### `python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"` output\r\n\r\n2.8.6-dev0\n",
+  "pull_number": 1268,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_nodes.py b/tests/unittest_nodes.py\nindex 7c78cd23ed..8c860eac3a 100644\n--- a/tests/unittest_nodes.py\n+++ b/tests/unittest_nodes.py\n@@ -306,6 +306,11 @@ def test_f_strings(self):\n         ast = abuilder.string_build(code)\n         self.assertEqual(ast.as_string().strip(), code.strip())\n \n+    @staticmethod\n+    def test_as_string_unknown() -> None:\n+        assert nodes.Unknown().as_string() == \"Unknown.Unknown()\"\n+        assert nodes.Unknown(lineno=1, col_offset=0).as_string() == \"Unknown.Unknown()\"\n+\n \n class _NodeTest(unittest.TestCase):\n     \"\"\"test transformation of If Node\"\"\"\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/ce5cbce5ba11cdc2f8139ade66feea1e181a7944"
+}

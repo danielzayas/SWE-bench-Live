@@ -1,0 +1,18 @@
+{
+  "instance_id": "pylint-dev__astroid-2219",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "pip install -r requirements_full.txt",
+    "apt-get update && apt-get install -y qtbase5-dev qtchooser",
+    "pip install -r requirements_full.txt",
+    "pip install -r requirements_dev.txt",
+    "pip install -e .",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 4,
+  "completed": true,
+  "exception": null
+}

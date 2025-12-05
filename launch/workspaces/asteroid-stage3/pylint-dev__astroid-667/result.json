@@ -1,0 +1,21 @@
+{
+  "instance_id": "pylint-dev__astroid-667",
+  "base_image": "python:3.6",
+  "setup_commands": [
+    "ls -l requirements.txt",
+    "grep -A 20 \"install_requires\" setup.py",
+    "grep \"install_requires\" setup.py",
+    "grep \"install_requires\" setup.py -n",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt typing typed-ast && pip install -e .",
+    "pytest astroid/tests",
+    "pip install pytest",
+    "pytest astroid/tests"
+  ],
+  "test_commands": [
+    "pytest -rA astroid/tests"
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

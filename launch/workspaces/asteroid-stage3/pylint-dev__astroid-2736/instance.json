@@ -1,0 +1,21 @@
+{
+  "all_hints_text": "Nice catch, it seems you hit some internal implementation quirks. Are you using fuzzing \ud83d\ude04 ?\nI sure am, thanks for the quick response!\nThe fix will be released in 3.3.11, probably at the same time than the fix for #2733 \n\n",
+  "base_commit": "3636bc299a5792dc2a421cf6951438a396fd9a6e",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/3161433ecd5439be8f3f300b9042570e630abc1c",
+    "https://github.com/pylint-dev/astroid/commit/e401578de1f458e4d6e3c578d121b3fbba39ac55"
+  ],
+  "created_at": "2025-05-12T19:54:12Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-2736",
+  "issue_numbers": [
+    2734
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex e4eb63d65..c9744b921 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -37,7 +37,9 @@ What's New in astroid 3.3.11?\n =============================\n Release date: TBA\n \n+* Fix a crash when parsing an empty arbitrary expression with ``extract_node`` (``extract_node(\"__()\")``).\n \n+  Closes #2734\n \n What's New in astroid 3.3.10?\n =============================\ndiff --git a/astroid/builder.py b/astroid/builder.py\nindex 6fa7be683..6205f83d4 100644\n--- a/astroid/builder.py\n+++ b/astroid/builder.py\n@@ -317,6 +317,7 @@ def _extract_expressions(node: nodes.NodeNG) -> Iterator[nodes.NodeNG]:\n         isinstance(node, nodes.Call)\n         and isinstance(node.func, nodes.Name)\n         and node.func.name == _TRANSIENT_FUNCTION\n+        and node.args\n     ):\n         real_expr = node.args[0]\n         assert node.parent\n",
+  "problem_statement": "IndexError when calling extract_node\nThe execution of the below code results in an exception with the following message: `IndexError: list index out of range`. This exception occurs in `_extract_expressions` at line 321 in `builder.py`. \n```python\nfrom astroid.brain.brain_boto3 import extract_node\nextract_node(\"__()\")\n```\n\n### Version:\n`v4.0.0.dev1` -- also occurs in `v3.3.10`\n\n### Traceback Report\n```\nTraceback (most recent call last):\n  File \"rep.py\", line 2, in <module>\n    extract_node(\"__()\")\n  File \"lib/python3.9/site-packages/astroid/builder.py\", line 452, in extract_node\n    extracted.extend(_extract_expressions(tree))\n  File \"ib/python3.9/site-packages/astroid/builder.py\", line 340, in _extract_expressions\n    yield from _extract_expressions(child)\n  File \"lib/python3.9/site-packages/astroid/builder.py\", line 340, in _extract_expressions\n    yield from _extract_expressions(child)\n  File \"lib/python3.9/site-packages/astroid/builder.py\", line 321, in _extract_expressions\n    real_expr = node.args[0]\nIndexError: list index out of range\n```\n\n\n\n",
+  "pull_number": 2736,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/test_regrtest.py b/tests/test_regrtest.py\nindex 76a7ceae1..5321c7e0c 100644\n--- a/tests/test_regrtest.py\n+++ b/tests/test_regrtest.py\n@@ -498,3 +498,9 @@ def _get_option(self, option):\n         )\n     )\n     assert node.inferred()[0].value == \"mystr\"\n+\n+\n+def test_regression_no_crash_during_build() -> None:\n+    node: nodes.Attribute = extract_node(\"__()\")\n+    assert node.args == []\n+    assert node.as_string() == \"__()\"\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/3636bc299a5792dc2a421cf6951438a396fd9a6e"
+}

@@ -1,0 +1,21 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "15e192160c7ca41d079e89e02ce9cd8b212e7b52",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/3600fa60c80500fe126b6946a0f9316dee82e1fc",
+    "https://github.com/pylint-dev/astroid/commit/97d33adb826adeb237df30f812f3918309c5c68a"
+  ],
+  "created_at": "2021-04-07T23:40:33Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-933",
+  "issue_numbers": [
+    932
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 12fae5ceab..711e6724f9 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -6,6 +6,10 @@ What's New in astroid 2.6.0?\n ============================\n Release Date: TBA\n \n+* Fix inference of instance attributes defined in base classes\n+\n+  Closes #932\n+\n * Do not set instance attributes on builtin object()\n \n  Closes #945\ndiff --git a/astroid/bases.py b/astroid/bases.py\nindex 20b9935829..02da1a8876 100644\n--- a/astroid/bases.py\n+++ b/astroid/bases.py\n@@ -207,8 +207,9 @@ def igetattr(self, name, context=None):\n         if not context:\n             context = contextmod.InferenceContext()\n         try:\n+            context.lookupname = name\n             # avoid recursively inferring the same attr on the same class\n-            if context.push((self._proxied, name)):\n+            if context.push(self._proxied):\n                 raise exceptions.InferenceError(\n                     message=\"Cannot infer the same attribute again\",\n                     node=self,\n",
+  "problem_statement": "Instance attributes defined in parent classes can raise InferenceError\n### Steps to reproduce\r\n\r\nInferring an attribute on a class instance where the instance attribute is defined in a base class will fail, but\r\ninferring that same attribute via `igetattr` on an `astroid.Instance` will succeed.\r\n\r\n```python\r\nimport astroid\r\nattr = astroid.extract_node(\"\"\"\r\nclass Parent:\r\n    def __init__(self):\r\n        self.data = 123\r\n\r\nclass Test(Parent):\r\n    pass\r\nt = Test()\r\nt.data\r\n\"\"\")\r\n# next(attr.infer())\r\n# raises astroid.exceptions.InferenceError: Inference failed for <Attribute.data l.9 at 0x...>.\r\ninstance = next(attr.expr.infer())\r\nprint(next(instance.igetattr('data')))\r\n# Const.int(value=123)\r\n```\r\n\r\nDiscovered while debugging #904. I couldn't find an exact match for this issue before, but probably https://github.com/PyCQA/pylint/issues/960 is the same issue.\r\n\r\n### Current behavior\r\n\r\nAs above\r\n\r\n### Expected behavior\r\n\r\nInferring attribute should return `Const.int(value=123)`\r\n\r\n### ``python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"`` output\r\n\r\n2.6.0-dev0\n",
+  "pull_number": 933,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_inference.py b/tests/unittest_inference.py\nindex ce15e1efd1..f9c9bde4ce 100644\n--- a/tests/unittest_inference.py\n+++ b/tests/unittest_inference.py\n@@ -4050,6 +4050,42 @@ def inner():\n         assert not isinstance(inferred, nodes.ClassDef)  # was inferred as builtins.type\n         assert inferred is util.Uninferable\n \n+    def test_infer_subclass_attr_instance_attr_indirect(self):\n+        node = extract_node(\n+            \"\"\"\n+        class Parent:\n+            def __init__(self):\n+                self.data = 123\n+\n+        class Test(Parent):\n+            pass\n+        t = Test()\n+        t\n+        \"\"\"\n+        )\n+        inferred = next(node.infer())\n+        assert isinstance(inferred, Instance)\n+        const = next(inferred.igetattr(\"data\"))\n+        assert isinstance(const, nodes.Const)\n+        assert const.value == 123\n+\n+    def test_infer_subclass_attr_instance_attr(self):\n+        node = extract_node(\n+            \"\"\"\n+        class Parent:\n+            def __init__(self):\n+                self.data = 123\n+\n+        class Test(Parent):\n+            pass\n+        t = Test()\n+        t.data\n+        \"\"\"\n+        )\n+        inferred = next(node.infer())\n+        assert isinstance(inferred, nodes.Const)\n+        assert inferred.value == 123\n+\n \n class GetattrTest(unittest.TestCase):\n     def test_yes_when_unknown(self):\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/15e192160c7ca41d079e89e02ce9cd8b212e7b52"
+}

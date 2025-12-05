@@ -1,0 +1,24 @@
+{
+  "instance_id": "pylint-dev__astroid-619",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest astroid/tests",
+    "pip install pytest",
+    "pytest astroid/tests",
+    "pip install -U pytest",
+    "grep install_requires setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt && pip install -e . && pytest astroid/tests",
+    "coverage run -m pytest astroid/tests && coverage report -m",
+    "pip install coverage",
+    "coverage run -m pytest astroid/tests && coverage report -m"
+  ],
+  "test_commands": [
+    "pytest -rA --tb=short astroid/tests"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

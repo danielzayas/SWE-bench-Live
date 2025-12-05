@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "Thanks for the report, this will be fixed by #870\n\n",
+  "base_commit": "2f889b7d311fd97d991ec743e3c7f58796613415",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/1d19be1d2b3e49b49036e907abae6b002557ce77"
+  ],
+  "created_at": "2020-12-26T17:19:05Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-870",
+  "issue_numbers": [
+    835
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 4950d1ac1e..f30157b584 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -6,6 +6,8 @@ astroid's ChangeLog\n What's New in astroid 2.5.0?\n ============================\n Release Date: TBA\n+\n+\n * Add `python 3.9` support.\n \n * The flat attribute of ``numpy.ndarray`` is now inferred as an ``numpy.ndarray`` itself.\n@@ -69,6 +71,10 @@ Release Date: TBA\n   Close #594\n   Close #681\n \n+* Do not crash when encountering starred assignments in enums.\n+\n+  Close #835\n+\n What's New in astroid 2.4.3?\n ============================\n Release Date: TBA\ndiff --git a/astroid/brain/brain_namedtuple_enum.py b/astroid/brain/brain_namedtuple_enum.py\nindex e7f5f17e5a..932e3dd246 100644\n--- a/astroid/brain/brain_namedtuple_enum.py\n+++ b/astroid/brain/brain_namedtuple_enum.py\n@@ -312,7 +312,6 @@ def infer_enum_class(node):\n             if any(not isinstance(value, nodes.AssignName) for value in values):\n                 continue\n \n-            targets = []\n             stmt = values[0].statement()\n             if isinstance(stmt, nodes.Assign):\n                 if isinstance(stmt.targets[0], nodes.Tuple):\n@@ -336,6 +335,8 @@ def infer_enum_class(node):\n \n             new_targets = []\n             for target in targets:\n+                if isinstance(target, nodes.Starred):\n+                    continue\n                 # Replace all the assignments with our mocked class.\n                 classdef = dedent(\n                     \"\"\"\n",
+  "problem_statement": "AttributeError: 'Starred' object has no attribute 'name'\nThe parsing of the following file:\r\n```\r\n\"\"\"Module for ContentType class.\"\"\"\r\n\r\nfrom enum import Enum\r\n\r\n\r\nclass ContentType(Enum):\r\n    \"\"\"Enumerable to represent different `telereddit.models.post.Post` types.\"\"\"\r\n\r\n    TEXT, PHOTO, VIDEO, GIF, YOUTUBE, *_ = range(20)\r\n```\r\n\r\n causes the error `AttributeError: 'Starred' object has no attribute 'name'` in `brain\\brain_namedtuple_enum.py`, line 350, in `infer_enum_class`.\r\n\r\nThe version 2.4.2 of astroid was used. Perhaps somehow related to #36 ?\n",
+  "pull_number": 870,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_brain.py b/tests/unittest_brain.py\nindex b42fa03ff1..8b73fa5c1b 100644\n--- a/tests/unittest_brain.py\n+++ b/tests/unittest_brain.py\n@@ -841,6 +841,16 @@ class MyEnum(enum.Enum):\n         assert inferred_tuple_node.as_string() == \"(1, 2)\"\n         assert inferred_list_node.as_string() == \"[2, 4]\"\n \n+    def test_enum_starred_is_skipped(self):\n+        code = \"\"\"\n+        from enum import Enum\n+        class ContentType(Enum):\n+            TEXT, PHOTO, VIDEO, GIF, YOUTUBE, *_ = [1, 2, 3, 4, 5, 6]\n+        ContentType.TEXT #@\n+        \"\"\"\n+        node = astroid.extract_node(code)\n+        next(node.infer())\n+\n \n @unittest.skipUnless(HAS_DATEUTIL, \"This test requires the dateutil library.\")\n class DateutilBrainTest(unittest.TestCase):\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/2f889b7d311fd97d991ec743e3c7f58796613415"
+}

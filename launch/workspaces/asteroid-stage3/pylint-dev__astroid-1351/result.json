@@ -1,0 +1,16 @@
+{
+  "instance_id": "pylint-dev__astroid-1351",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "python -m venv venv",
+    ". venv/bin/activate && pip install -U pip setuptools wheel && pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e .",
+    ". venv/bin/activate && pip install -U pip setuptools wheel && pip install -r requirements_test_min.txt -r requirements_test_brain.txt && pip install -e .",
+    ". venv/bin/activate && pytest"
+  ],
+  "test_commands": [
+    ". venv/bin/activate && pytest -rA tests"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

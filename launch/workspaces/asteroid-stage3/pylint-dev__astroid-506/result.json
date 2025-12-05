@@ -1,0 +1,15 @@
+{
+  "instance_id": "pylint-dev__astroid-506",
+  "base_image": "python:3.6",
+  "setup_commands": [
+    "pip install -e .",
+    "pip install pytest nose python-dateutil attr numpy coverage",
+    "python -m unittest discover -s astroid/tests -p \"unittest*.py\""
+  ],
+  "test_commands": [
+    "pytest -rA astroid/tests"
+  ],
+  "duration": 4,
+  "completed": true,
+  "exception": null
+}

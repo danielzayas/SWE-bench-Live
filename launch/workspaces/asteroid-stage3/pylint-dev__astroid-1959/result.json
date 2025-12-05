@@ -1,0 +1,23 @@
+{
+  "instance_id": "pylint-dev__astroid-1959",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt && pip install -r requirements_test_pre_commit.txt && pip install contributors-txt pre-commit tbump types-pkg_resources attrs types-attrs nose python-dateutil regex six types-six urllib3 types-python-dateutil",
+    "pip install -e .",
+    "pip install -e . --use-pep517=false",
+    "pip install -e . --no-use-pep517",
+    "pip --version",
+    "pip install -e .",
+    "ls setup.py",
+    "head -40 tox.ini",
+    "pip install .",
+    "pytest --cov"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

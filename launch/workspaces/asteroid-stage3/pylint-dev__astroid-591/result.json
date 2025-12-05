@@ -1,0 +1,32 @@
+{
+  "instance_id": "pylint-dev__astroid-591",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest astroid",
+    "pip install pytest",
+    "pytest astroid",
+    "head -40 README.rst",
+    "head -40 tox.ini",
+    "pip install -e .",
+    "pytest astroid",
+    "python --version",
+    "python -c \"import astroid; print(astroid.__version__)\"",
+    "head -40 README.rst",
+    "head -40 tox.ini",
+    "python --version",
+    "python3.7 --version",
+    "apt-get update && apt-get install -y python3.7 python3.7-venv python3.7-dev",
+    "pip install -e . && pip install pytest coverage && pytest astroid",
+    "ls /usr/bin/python*",
+    "python3.11 -m pip install -e . && python3.11 -m pip install pytest coverage && python3.11 -m pytest astroid"
+  ],
+  "test_commands": [
+    "pytest -rA astroid"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

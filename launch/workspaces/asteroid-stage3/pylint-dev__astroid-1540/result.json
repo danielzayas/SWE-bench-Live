@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-1540",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -e .",
+    "cat pyproject.toml",
+    "pip install --upgrade pip setuptools wheel",
+    "pip install .",
+    "pip install -r requirements_test_min.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

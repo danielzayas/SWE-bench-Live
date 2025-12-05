@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-1844",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt -r requirements_test_brain.txt",
+    "apt-get update && apt-get install -y build-essential libgl1-mesa-dev",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt -r requirements_test_brain.txt && pip install git+https://github.com/pycqa/pylint@main && pip install -e .",
+    "apt-get update && apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e . && pytest",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install pylint && pip install -e . && pytest",
+    "sed -i 's/pylint==2.15.5/pylint/' requirements_test_pre_commit.txt && pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e . && pytest",
+    "sed -i 's/flake8-typing-imports==1.14.0/flake8-typing-imports/' requirements_test_pre_commit.txt && pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e . && pytest",
+    "apt-get update && apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e . && pytest",
+    "qmake --version",
+    "apt-get update && apt-get install -y qt6-base-dev qt6-qmake qt6-base-dev-tools",
+    "apt-get remove -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools && pip install -e .",
+    "pip install --upgrade pip setuptools wheel && pip install -e .",
+    "cat pyproject.toml setup.cfg",
+    "pip install . && pytest",
+    "pip install -r requirements_test_min.txt && pytest"
+  ],
+  "test_commands": [
+    "pytest -rA tests/"
+  ],
+  "duration": 2,
+  "completed": true,
+  "exception": null
+}

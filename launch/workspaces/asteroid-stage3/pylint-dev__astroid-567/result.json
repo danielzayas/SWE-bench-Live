@@ -1,0 +1,33 @@
+{
+  "instance_id": "pylint-dev__astroid-567",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "ls -l /testbed",
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt && pip install -e .",
+    "pytest astroid",
+    "pip install pytest",
+    "pytest astroid",
+    "head -40 README.rst",
+    "pip install -U pytest",
+    "pip install pytest==7.1.2",
+    "pytest --version",
+    "pip list | grep pytest",
+    "pip install -e . && pytest astroid",
+    "pip install -U pytest",
+    "pytest astroid",
+    "python --version",
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest astroid"
+  ],
+  "test_commands": [
+    "pytest -rA astroid",
+    "pytest --version"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

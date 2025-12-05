@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-400",
+  "base_image": "python:3.6",
+  "setup_commands": [
+    "ls -l /testbed/requirements.txt",
+    "head -40 /testbed/setup.py",
+    "head -40 /testbed/astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt",
+    "pip install -e .",
+    "ls -l astroid/tests",
+    "python -m unittest discover -s astroid/tests -p \"unittest*.py\""
+  ],
+  "test_commands": [
+    "python -m unittest discover -v -s astroid/tests -p \"unittest*.py\""
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

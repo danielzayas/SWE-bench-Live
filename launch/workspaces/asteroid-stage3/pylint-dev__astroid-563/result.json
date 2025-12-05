@@ -1,0 +1,32 @@
+{
+  "instance_id": "pylint-dev__astroid-563",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "ls -l /testbed",
+    "pip install -e .",
+    "pip install nose pytest python-dateutil coverage",
+    "pytest astroid",
+    "python3.7 -m pytest astroid",
+    "head -40 setup.py",
+    "head -40 tox.ini",
+    "pip install --upgrade pip setuptools wheel",
+    "pip install -e . && pip install nose pytest python-dateutil coverage && pytest astroid",
+    "head -40 README.rst",
+    "head -40 tox.ini",
+    "python3.7 --version",
+    "apt-get update && apt-get install -y python3.7 python3.7-venv python3.7-dev",
+    "pip install -e . && pip install -r <(echo \"lazy-object-proxy\\nnose\\npytest\\npython-dateutil\\ncoverage\\nsix\\nwrapt\") && pytest astroid",
+    "pip install -e . && pip install lazy-object-proxy nose pytest python-dateutil coverage six wrapt && pytest astroid",
+    "python3.6 --version || echo \"python3.6 not found\"",
+    "apt-get update && apt-get install -y python3.7 python3.7-venv python3.7-dev",
+    "python3.7 --version || echo \"python3.7 not found\"",
+    "pip install -e . && pip install lazy-object-proxy nose pytest python-dateutil coverage six wrapt && pytest astroid",
+    "python3.6 --version || echo \"python3.6 not found\""
+  ],
+  "test_commands": [
+    "pytest -rA astroid"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

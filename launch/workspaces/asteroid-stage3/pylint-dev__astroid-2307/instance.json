@@ -1,0 +1,24 @@
+{
+  "all_hints_text": "Thanks for the report.\n@mbyrnepr2 Would you be willing to take a look?\n\n",
+  "base_commit": "1113d490ec4a94cdc1b35f45abfdaca9f19fa31e",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/bf31af2643cfd3236b9ec9120f8e911681c5dc9f",
+    "https://github.com/pylint-dev/astroid/commit/0518e01c2638a3ecdb68b0c314da3f52531ecb99",
+    "https://github.com/pylint-dev/astroid/commit/b93922fcbbf30d7d23ec7b340f539137c3c83507",
+    "https://github.com/pylint-dev/astroid/commit/cae2a5df3559c0cd18fb978278abba76337fdc33",
+    "https://github.com/pylint-dev/astroid/commit/43a459bf653554946f88864dcdc4b4930c9af0e2"
+  ],
+  "created_at": "2023-09-25T18:41:07Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-2307",
+  "issue_numbers": [
+    2305
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 52e064edff..44143405e7 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -223,6 +223,16 @@ Release date: TBA\n   Closes pylint-dev/pylint#9015\n \n \n+What's New in astroid 2.15.8?\n+=============================\n+Release date: TBA\n+\n+* Fix a regression in 2.15.7 for ``unsubscriptable-object``.\n+\n+  Closes #2305\n+  Closes pylint-dev/pylint#9069\n+\n+\n What's New in astroid 2.15.7?\n =============================\n Release date: 2023-09-23\ndiff --git a/astroid/brain/brain_typing.py b/astroid/brain/brain_typing.py\nindex cb3d1ce969..d4b2ca0a5a 100644\n--- a/astroid/brain/brain_typing.py\n+++ b/astroid/brain/brain_typing.py\n@@ -17,6 +17,7 @@\n from astroid.builder import AstroidBuilder, _extract_single_node\n from astroid.const import PY39_PLUS, PY312_PLUS\n from astroid.exceptions import (\n+    AstroidSyntaxError,\n     AttributeInferenceError,\n     InferenceError,\n     UseInferenceDefault,\n@@ -136,14 +137,10 @@ def infer_typing_typevar_or_newtype(\n         raise UseInferenceDefault\n \n     typename = node.args[0].as_string().strip(\"'\")\n-    node = ClassDef(\n-        name=typename,\n-        lineno=node.lineno,\n-        col_offset=node.col_offset,\n-        parent=node.parent,\n-        end_lineno=node.end_lineno,\n-        end_col_offset=node.end_col_offset,\n-    )\n+    try:\n+        node = extract_node(TYPING_TYPE_TEMPLATE.format(typename))\n+    except AstroidSyntaxError as exc:\n+        raise InferenceError from exc\n     return node.infer(context=context_itton)\n \n \n",
+  "problem_statement": "Regression in Astroid version 2.15.7 in handling subscriptable type parameters\nAstroid version 2.15.7 fails to correctly handle a subscriptable type parameter  most likely due to the change in this [PR](https://github.com/pylint-dev/astroid/pull/2239). \r\n\r\n### Steps to reproduce\r\n\r\n```python\r\nfrom collections.abc import Mapping\r\nfrom typing import Generic, TypeVar, TypedDict\r\nfrom dataclasses import dataclass\r\n\r\nclass Identity(TypedDict):\r\n    \"\"\"It's the identity.\"\"\"\r\n\r\n    name: str\r\n\r\nT = TypeVar(\"T\", bound=Mapping)\r\n\r\n@dataclass\r\nclass Animal(Generic[T]):\r\n    \"\"\"It's an animal.\"\"\"\r\n\r\n    identity: T\r\n\r\nclass Dog(Animal[Identity]):\r\n    \"\"\"It's a Dog.\"\"\"\r\n\r\ndog = Dog(identity=Identity(name=\"Dog\"))\r\nprint(dog.identity[\"name\"])\r\n```\r\n\r\n### Current behavior\r\nPylint (running Astroid 2.15.7) gives the following error for the example above:\r\n```\r\nE1136: Value 'dog.identity' is unsubscriptable (unsubscriptable-object)\r\n```\r\n### Expected behavior\r\nAstroid should correctly handle a subscriptable type parameter.\r\n\r\n\r\n### `python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"` output\r\n2.15.7\n",
+  "pull_number": 2307,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/brain/test_typing.py b/tests/brain/test_typing.py\nindex 8d75708d6d..1e8e3eaf88 100644\n--- a/tests/brain/test_typing.py\n+++ b/tests/brain/test_typing.py\n@@ -2,7 +2,10 @@\n # For details: https://github.com/pylint-dev/astroid/blob/main/LICENSE\n # Copyright (c) https://github.com/pylint-dev/astroid/blob/main/CONTRIBUTORS.txt\n \n-from astroid import builder, nodes\n+import pytest\n+\n+from astroid import builder\n+from astroid.exceptions import InferenceError\n \n \n def test_infer_typevar() -> None:\n@@ -12,13 +15,11 @@ def test_infer_typevar() -> None:\n     Test that an inferred `typing.TypeVar()` call produces a `nodes.ClassDef`\n     node.\n     \"\"\"\n-    assign_node = builder.extract_node(\n+    call_node = builder.extract_node(\n         \"\"\"\n     from typing import TypeVar\n-    MyType = TypeVar('My.Type')\n+    TypeVar('My.Type')\n     \"\"\"\n     )\n-    call = assign_node.value\n-    inferred = next(call.infer())\n-    assert isinstance(inferred, nodes.ClassDef)\n-    assert inferred.name == \"My.Type\"\n+    with pytest.raises(InferenceError):\n+        call_node.inferred()\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/1113d490ec4a94cdc1b35f45abfdaca9f19fa31e"
+}

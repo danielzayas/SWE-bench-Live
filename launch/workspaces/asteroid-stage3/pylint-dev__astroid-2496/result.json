@@ -1,0 +1,15 @@
+{
+  "instance_id": "pylint-dev__astroid-2496",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "pip install -r requirements_dev.txt",
+    "pip install -e .",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

@@ -1,0 +1,20 @@
+{
+  "instance_id": "pylint-dev__astroid-901",
+  "base_image": "python:3.9",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pip install --upgrade pip setuptools wheel",
+    "pip install .",
+    "pytest tests",
+    "pip install pytest",
+    "pytest tests"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

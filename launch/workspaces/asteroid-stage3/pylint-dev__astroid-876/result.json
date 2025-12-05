@@ -1,0 +1,17 @@
+{
+  "instance_id": "pylint-dev__astroid-876",
+  "base_image": "python:3.9",
+  "setup_commands": [
+    "pip install -e .",
+    "pip install .",
+    "pytest tests",
+    "pip install pytest",
+    "pytest tests"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

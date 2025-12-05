@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-1757",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -e .",
+    "cat pyproject.toml",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "head -20 requirements_test_brain.txt",
+    "grep -v PyQt6 requirements_test_brain.txt > requirements_test_brain_no_pyqt6.txt && pip install -r requirements_test_min.txt -r requirements_test_brain_no_pyqt6.txt",
+    "pip install -e . && pytest tests/",
+    "pip install . && pytest tests/"
+  ],
+  "test_commands": [
+    "pytest -rA tests/"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

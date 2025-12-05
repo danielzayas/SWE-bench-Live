@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-1030",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -e .",
+    "cat setup.py",
+    "pip install .",
+    "pip install -r requirements_test_min.txt -r requirements_test_brain.txt",
+    "pip install pytest attrs nose numpy python-dateutil six",
+    "pip install pytest attrs nose python-dateutil six",
+    "pip install . && pytest"
+  ],
+  "test_commands": [
+    "pytest tests/ -rA"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

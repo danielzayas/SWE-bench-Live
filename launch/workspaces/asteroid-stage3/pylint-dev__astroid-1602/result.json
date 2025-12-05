@@ -1,0 +1,15 @@
+{
+  "instance_id": "pylint-dev__astroid-1602",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "cat requirements_test_brain.txt",
+    "python -m venv venv && . venv/bin/activate && pip install -U pip setuptools wheel && pip install -r requirements_test.txt -r requirements_test_brain.txt && pip install -e . && pytest tests/",
+    "sed '/PyQt6/d' requirements_test_brain.txt > requirements_test_brain_no_pyqt.txt && python -m venv venv && . venv/bin/activate && pip install -U pip setuptools wheel && pip install -r requirements_test.txt -r requirements_test_brain_no_pyqt.txt && pip install -e . && pytest tests/"
+  ],
+  "test_commands": [
+    "pytest -rA tests/"
+  ],
+  "duration": 2,
+  "completed": true,
+  "exception": null
+}

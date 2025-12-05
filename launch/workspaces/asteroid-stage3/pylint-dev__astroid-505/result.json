@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-505",
+  "base_image": "python:3.7",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt",
+    "pip install -e .",
+    "python -m coverage run -m pytest --pyargs astroid",
+    "pip install coverage",
+    "python -m coverage run -m pytest --pyargs astroid",
+    "pip install pytest",
+    "python -m coverage run -m pytest --pyargs astroid",
+    "pip install -U pytest",
+    "pip install pytest==6.2.5",
+    "pip install -U pytest --index-url https://pypi.org/simple",
+    "python -m pytest --pyargs astroid",
+    "pip show astroid",
+    "pip install -U astroid",
+    "pip install --force-reinstall astroid",
+    "pip uninstall -y astroid && pip install astroid",
+    "pip install -e .",
+    "python -m coverage run -m pytest --pyargs astroid"
+  ],
+  "test_commands": [
+    "python -m pytest --pyargs astroid -rA"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

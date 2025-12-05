@@ -1,0 +1,22 @@
+{
+  "instance_id": "pylint-dev__astroid-1934",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "python -m pip install -U pip setuptools wheel",
+    "pip install -r requirements_test_min.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt",
+    "pip install -e .",
+    "pip install -e . --use-pep517=false",
+    "pip install -e . --no-use-pep517",
+    "pip --version",
+    "pip install -e .",
+    "pip install .",
+    "pytest --cov"
+  ],
+  "test_commands": [
+    "pytest -rA --cov"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

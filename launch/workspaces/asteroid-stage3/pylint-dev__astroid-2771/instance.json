@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "Affect on pylint 3.3.7:\n```bash\n$ PYTHONPATH=x.zip python3 \n>>> import astroid\n>>> from pylint.checkers import utils\n>>> x = astroid.extract_node('''\n... from xxx.test import func\n... func  #@\n... ''')\n>>> x\n<Name.func l.3 at 0xf4d3d84f72f0>\n>>> utils.safe_infer(x)\nUninferable\n```\n\n",
+  "base_commit": "580d17cd55af7803c26c375c4afc1dc0d50a0bc5",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/0b2dc31010f4ba861c44520b1c62898eae6ebf47"
+  ],
+  "created_at": "2025-06-25T21:47:16Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-2771",
+  "issue_numbers": [
+    2770
+  ],
+  "language": "python",
+  "patch": "diff --git a/astroid/interpreter/_import/spec.py b/astroid/interpreter/_import/spec.py\nindex 7e51cc10e..e28f1d0c3 100644\n--- a/astroid/interpreter/_import/spec.py\n+++ b/astroid/interpreter/_import/spec.py\n@@ -325,6 +325,11 @@ def find_module(\n             submodule_search_locations=path,\n         )\n \n+    def contribute_to_path(\n+        self, spec: ModuleSpec, processed: list[str]\n+    ) -> Sequence[str] | None:\n+        return spec.submodule_search_locations\n+\n \n class PathSpecFinder(Finder):\n     \"\"\"Finder based on importlib.machinery.PathFinder.\"\"\"\n",
+  "problem_statement": "AstroidManager.ast_from_module_name returns incorrect module when a pyz is in the PYTHONPATH\nCreate a pyz x.zip:\n```bash\n$ unzip -t x.zip \nArchive:  x.zip\n    testing: xxx/                     OK\n    testing: xxx/test.py              OK\n    testing: xxx/__init__.py          OK\nNo errors detected in compressed data of x.zip.\n```\nxxx/test.py contains a function named func\n\nRun python:\n```bash\n$ PYTHONPATH=x.zip python3\n>>> from astroid.manager import AstroidManager\n>>> AstroidManager().ast_from_module_name('xxx.test').file\n'/usr/lib/python3.12/test/__init__.py'\n```\nThe module returned is from the python stdlib but should be from within the pyz\n\nExpected result:\n```bash\n>>> AstroidManager().ast_from_module_name('xxx.test').file\n'/home/user/pyztest/x.zip/xxx/test.py'\n```\n\nTested with astroid 3.3.10\n",
+  "pull_number": 2771,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/test_manager.py b/tests/test_manager.py\nindex 9a7bbdb7e..1b92ce4b4 100644\n--- a/tests/test_manager.py\n+++ b/tests/test_manager.py\n@@ -277,6 +277,17 @@ def test_ast_from_module_name_pyz(self) -> None:\n         finally:\n             os.remove(linked_file_name)\n \n+    def test_ast_from_module_name_pyz_with_submodule(self) -> None:\n+        with self._restore_package_cache():\n+            archive_path = os.path.join(resources.RESOURCE_PATH, \"x.zip\")\n+            sys.path.insert(0, archive_path)\n+            module = self.manager.ast_from_module_name(\"xxx.test\")\n+            self.assertEqual(module.name, \"xxx.test\")\n+            end = os.path.join(archive_path, \"xxx\", \"test\")\n+            self.assertTrue(\n+                module.file.endswith(end), f\"{module.file} doesn't endswith {end}\"\n+            )\n+\n     def test_zip_import_data(self) -> None:\n         \"\"\"Check if zip_import_data works.\"\"\"\n         with self._restore_package_cache():\ndiff --git a/tests/testdata/python3/data/x.zip b/tests/testdata/python3/data/x.zip\nnew file mode 100644\nindex 000000000..4f663fb34\nBinary files /dev/null and b/tests/testdata/python3/data/x.zip differ\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/580d17cd55af7803c26c375c4afc1dc0d50a0bc5"
+}

@@ -1,0 +1,21 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "6280a758733434cba32b719519908314a5c2955b",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/4e8eca77e4cd577ec8b812ac2da92a96077c953d",
+    "https://github.com/pylint-dev/astroid/commit/cc49adde8ee7cb8ae23ec0e80f86063ad5de702c"
+  ],
+  "created_at": "2022-06-12T11:50:45Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-1616",
+  "issue_numbers": [
+    1611
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex bcf244b1d9..262c3af41d 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -24,7 +24,7 @@ Release date: TBA\n \n * Calls to ``str.format`` are now correctly inferred.\n \n-  Closes #104\n+  Closes #104, Closes #1611\n \n * Adds missing enums from ``ssl`` module.\n \ndiff --git a/astroid/brain/brain_builtin_inference.py b/astroid/brain/brain_builtin_inference.py\nindex 00253f243b..af1ddf4d23 100644\n--- a/astroid/brain/brain_builtin_inference.py\n+++ b/astroid/brain/brain_builtin_inference.py\n@@ -913,12 +913,15 @@ def _infer_copy_method(\n \n def _is_str_format_call(node: nodes.Call) -> bool:\n     \"\"\"Catch calls to str.format().\"\"\"\n-    return (\n-        isinstance(node.func, nodes.Attribute)\n-        and node.func.attrname == \"format\"\n-        and isinstance(node.func.expr, nodes.Const)\n-        and isinstance(node.func.expr.value, str)\n-    )\n+    if not isinstance(node.func, nodes.Attribute) or not node.func.attrname == \"format\":\n+        return False\n+\n+    if isinstance(node.func.expr, nodes.Name):\n+        value = helpers.safe_infer(node.func.expr)\n+    else:\n+        value = node.func.expr\n+\n+    return isinstance(value, nodes.Const) and isinstance(value.value, str)\n \n \n def _infer_str_format_call(\n@@ -926,7 +929,12 @@ def _infer_str_format_call(\n ) -> Iterator[nodes.Const | type[util.Uninferable]]:\n     \"\"\"Return a Const node based on the template and passed arguments.\"\"\"\n     call = arguments.CallSite.from_call(node, context=context)\n-    format_template: str = node.func.expr.value\n+    if isinstance(node.func.expr, nodes.Name):\n+        value: nodes.Const = helpers.safe_infer(node.func.expr)\n+    else:\n+        value = node.func.expr\n+\n+    format_template = value.value\n \n     # Get the positional arguments passed\n     inferred_positional = [\n",
+  "problem_statement": "Infer calls to str.format() on names\nFuture enhancement could infer this value instead of giving an empty string:\r\n\r\n```python\r\nfrom astroid import extract_node\r\ncall = extract_node(\"\"\"\r\nx = 'python is {}'\r\nx.format('helpful sometimes')\r\n\"\"\")\r\ncall.inferred()[0].value  # gives \"\"\r\n```\r\n\r\n_Originally posted by @jacobtylerwalls in https://github.com/PyCQA/astroid/pull/1602#discussion_r893423433_\n",
+  "pull_number": 1616,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_brain_builtin.py b/tests/unittest_brain_builtin.py\nindex 54e7d2190d..dd99444b1f 100644\n--- a/tests/unittest_brain_builtin.py\n+++ b/tests/unittest_brain_builtin.py\n@@ -66,6 +66,13 @@ class TestStringNodes:\n         \"\"\",\n                 id=\"mixed-indexes-from-mixed\",\n             ),\n+            pytest.param(\n+                \"\"\"\n+        string = \"My name is {}, I'm {}\"\n+        string.format(\"Daniel\", 12)\n+        \"\"\",\n+                id=\"empty-indexes-on-variable\",\n+            ),\n         ],\n     )\n     def test_string_format(self, format_string: str) -> None:\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/6280a758733434cba32b719519908314a5c2955b"
+}

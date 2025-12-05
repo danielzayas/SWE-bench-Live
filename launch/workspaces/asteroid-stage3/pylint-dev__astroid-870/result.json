@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-870",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "cat setup.py",
+    "pip install -e .",
+    "pip install .",
+    "pytest --maxfail=1 --disable-warnings -q",
+    "pip install pytest",
+    "pytest --maxfail=1 --disable-warnings -q",
+    "pip install pytest==7.2.0",
+    "pip install pytest==6.2.1",
+    "pytest --maxfail=1 --disable-warnings -q",
+    "pip uninstall -y pytest py",
+    "pip install pytest==7.2.0",
+    "pip install --index-url https://pypi.org/simple pytest",
+    "pytest --maxfail=1 --disable-warnings -q",
+    "pip install --upgrade wrapt",
+    "pip install --upgrade wrapt",
+    "pip install --upgrade \"wrapt>=2.0.0\"",
+    "pip install --index-url https://pypi.org/simple wrapt",
+    "pip install -e .",
+    "pip install ."
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

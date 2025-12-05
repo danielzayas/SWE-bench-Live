@@ -1,0 +1,22 @@
+{
+  "instance_id": "pylint-dev__astroid-1866",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "apt-get update && apt-get install -y build-essential libgl1-mesa-dev",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "apt-get update && apt-get install -y qt5-qmake",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "apt-get install -y qtbase5-dev",
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt -r requirements_test_pre_commit.txt && pip install -e .",
+    "pip install --upgrade setuptools wheel && pip install -e .",
+    "pip install . && pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

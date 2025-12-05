@@ -1,0 +1,16 @@
+{
+  "instance_id": "pylint-dev__astroid-484",
+  "base_image": "python:3.6",
+  "setup_commands": [
+    "ls -l /testbed",
+    "pip install lazy-object-proxy nose numpy attr pytest python-dateutil six wrapt pylint coverage",
+    "pip install -e .",
+    "python -m unittest discover -s astroid/tests -p \"unittest*.py\""
+  ],
+  "test_commands": [
+    "pytest -rA astroid/tests"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

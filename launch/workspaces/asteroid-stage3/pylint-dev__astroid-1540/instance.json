@@ -1,0 +1,34 @@
+{
+  "all_hints_text": "I think the same issue applies to `list`, `set` and `bytearray`. I think we can deal with all these at the same time.\n\n",
+  "base_commit": "a39bbcea62f918668cf12aa269e2a5d145e76df9",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/a3cbcaacfa47fc4532bb0e5e9425eb769dbd9882",
+    "https://github.com/pylint-dev/astroid/commit/a9131b4f9705d9e0ac5ced4ae6742e5eb0659d1c",
+    "https://github.com/pylint-dev/astroid/commit/9002d778bea0a8216664bb736f78684249bc144e",
+    "https://github.com/pylint-dev/astroid/commit/53b1f6b3320bbe752f96987be6926a9806c60ef1",
+    "https://github.com/pylint-dev/astroid/commit/fbbd289ab3e889033c2c21275dc75ac12b6ddfcd",
+    "https://github.com/pylint-dev/astroid/commit/9c94763426c71516a5fd9e3167b1633bf9587c05",
+    "https://github.com/pylint-dev/astroid/commit/31911dc5d6cec85ba2703a895d7a5f3c695707cc",
+    "https://github.com/pylint-dev/astroid/commit/e886697ca9a47c729a5f026b649a6704f3626778",
+    "https://github.com/pylint-dev/astroid/commit/26c776d6580871659e3ecc6ecbdc2eddfd25729d",
+    "https://github.com/pylint-dev/astroid/commit/f0dd608181a6f5f0629736b69d44469683362164",
+    "https://github.com/pylint-dev/astroid/commit/dd48a2be906ea4181834f42ba515408859604329",
+    "https://github.com/pylint-dev/astroid/commit/3bc8e132c71c72412575a3b79f88880e03ea36f7",
+    "https://github.com/pylint-dev/astroid/commit/f5e8e2ce037826386274a98ffe99d2fcdcfd9390",
+    "https://github.com/pylint-dev/astroid/commit/6fc23a9c5948dadeaf6890425c4a70c64aa7f513",
+    "https://github.com/pylint-dev/astroid/commit/51e540139a82b95233eb0a85a703a67795ef5ab2"
+  ],
+  "created_at": "2022-05-03T20:33:08Z",
+  "hints_text": "I think the same issue applies to `list`, `set` and `bytearray`. I think we can deal with all these at the same time.\n\n",
+  "instance_id": "pylint-dev__astroid-1540",
+  "issue_numbers": [
+    1403
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex a418b1b7af..cf1004721e 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -20,6 +20,10 @@ Release date: TBA\n * Rename ``ModuleSpec`` -> ``module_type`` constructor parameter to match attribute\n   name and improve typing. Use ``type`` instead.\n \n+* Infer the return value of the ``.copy()`` method on ``dict``, ``list``, ``set``,\n+  and ``frozenset``.\n+\n+  Closes #1403\n \n What's New in astroid 2.11.6?\n =============================\ndiff --git a/astroid/brain/brain_builtin_inference.py b/astroid/brain/brain_builtin_inference.py\nindex 5d7040a4e1..125e0858c8 100644\n--- a/astroid/brain/brain_builtin_inference.py\n+++ b/astroid/brain/brain_builtin_inference.py\n@@ -4,8 +4,9 @@\n \n \"\"\"Astroid hooks for various builtins.\"\"\"\n \n+import itertools\n from functools import partial\n-from typing import Optional\n+from typing import Iterator, Optional\n \n from astroid import arguments, helpers, inference_tip, nodes, objects, util\n from astroid.builder import AstroidBuilder\n@@ -892,6 +893,22 @@ def _build_dict_with_elements(elements):\n     return _build_dict_with_elements([])\n \n \n+def _infer_copy_method(\n+    node: nodes.Call, context: Optional[InferenceContext] = None\n+) -> Iterator[nodes.NodeNG]:\n+    assert isinstance(node.func, nodes.Attribute)\n+    inferred_orig, inferred_copy = itertools.tee(node.func.expr.infer(context=context))\n+    if all(\n+        isinstance(\n+            inferred_node, (nodes.Dict, nodes.List, nodes.Set, objects.FrozenSet)\n+        )\n+        for inferred_node in inferred_orig\n+    ):\n+        return inferred_copy\n+\n+    raise UseInferenceDefault()\n+\n+\n # Builtins inference\n register_builtin_transform(infer_bool, \"bool\")\n register_builtin_transform(infer_super, \"super\")\n@@ -920,3 +937,10 @@ def _build_dict_with_elements(elements):\n     inference_tip(_infer_object__new__decorator),\n     _infer_object__new__decorator_check,\n )\n+\n+AstroidManager().register_transform(\n+    nodes.Call,\n+    inference_tip(_infer_copy_method),\n+    lambda node: isinstance(node.func, nodes.Attribute)\n+    and node.func.attrname == \"copy\",\n+)\n",
+  "problem_statement": "dict.copy() result is not inferred as dict\n### Steps to reproduce\r\n\r\nRun this code:\r\n```python\r\nimport astroid\r\n\r\ncode = \"\"\"\r\nx = dict()\r\ny = x.copy()\r\n\"\"\"\r\n\r\nast = astroid.parse(code)\r\n\r\nfor name in ('x', 'y'):\r\n  node = ast.locals[name][0]\r\n  print(name, node.inferred())\r\n```\r\n\r\n### Current behavior\r\nx [<Dict.dict l.2 at 0x7fffe852e110>]\r\ny [Uninferable]\r\n\r\n### Expected behavior\r\nI expect `y` to be inferred as `dict` too.\r\n\r\n### `python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"` output\r\n2.4.2\n",
+  "pull_number": 1540,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_inference.py b/tests/unittest_inference.py\nindex 4069d0f320..5b6f09b283 100644\n--- a/tests/unittest_inference.py\n+++ b/tests/unittest_inference.py\n@@ -2051,6 +2051,37 @@ def test_dict_invalid_args(self) -> None:\n             self.assertIsInstance(inferred, Instance)\n             self.assertEqual(inferred.qname(), \"builtins.dict\")\n \n+    def test_copy_method_inference(self) -> None:\n+        code = \"\"\"\n+        a_dict = {\"b\": 1, \"c\": 2}\n+        b_dict = a_dict.copy()\n+        b_dict #@\n+\n+        a_list = [1, 2, 3]\n+        b_list = a_list.copy()\n+        b_list #@\n+\n+        a_set = set([1, 2, 3])\n+        b_set = a_set.copy()\n+        b_set #@\n+\n+        a_frozenset = frozenset([1, 2, 3])\n+        b_frozenset = a_frozenset.copy()\n+        b_frozenset #@\n+\n+        a_unknown = unknown()\n+        b_unknown = a_unknown.copy()\n+        b_unknown #@\n+        \"\"\"\n+        ast = extract_node(code, __name__)\n+        self.assertInferDict(ast[0], {\"b\": 1, \"c\": 2})\n+        self.assertInferList(ast[1], [1, 2, 3])\n+        self.assertInferSet(ast[2], [1, 2, 3])\n+        self.assertInferFrozenSet(ast[3], [1, 2, 3])\n+\n+        inferred_unknown = next(ast[4].infer())\n+        assert inferred_unknown == util.Uninferable\n+\n     def test_str_methods(self) -> None:\n         code = \"\"\"\n         ' '.decode() #@\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/a39bbcea62f918668cf12aa269e2a5d145e76df9"
+}

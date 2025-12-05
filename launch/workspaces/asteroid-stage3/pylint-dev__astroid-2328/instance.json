@@ -1,0 +1,25 @@
+{
+  "all_hints_text": "Hi, the link you provided doesn't work sadly.\r\n\r\nI also don't see how we are depending on `crypt`. We don't import it and only provide a `brain`.\r\nPlease open a PR to fix this issue to show us what we would need to change. Closing for now as I don't see any immediate action on our side.\nI've fixed the link. The tests fail as a result of crypt's removal.\nAh my bad, I was too quick to close.\r\n\r\nhttps://github.com/pylint-dev/astroid/blob/7124000a60da610010be25990132a087313fc5c6/tests/brain/test_brain.py#L1980\r\n\r\nWe need to disable the test defined here for `3.13+`. Should be an easy fix, contribution very much welcomed!\nI'll take a look. Note there are two additional tests failing.\n\n",
+  "base_commit": "7124000a60da610010be25990132a087313fc5c6",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/05e1d97aaee4b13b50c14becd4043d34a05232dc",
+    "https://github.com/pylint-dev/astroid/commit/d3e8a9f29892f0fb5a880ec60d669c51e5aaad37",
+    "https://github.com/pylint-dev/astroid/commit/08ad345882933444f659e99867634ff7c39a471b",
+    "https://github.com/pylint-dev/astroid/commit/565af338e5a35767c72b291e222f354ad72aaee7",
+    "https://github.com/pylint-dev/astroid/commit/6d1bbf26e0236d87728c21f3289fd197c6b39661",
+    "https://github.com/pylint-dev/astroid/commit/6d5b43cd9b5528983078f6cc4b9299bd4bc213c9"
+  ],
+  "created_at": "2023-10-25T20:42:26Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-2328",
+  "issue_numbers": [
+    2327
+  ],
+  "language": "python",
+  "patch": "diff --git a/astroid/const.py b/astroid/const.py\nindex 91c2d32f06..b57959be7b 100644\n--- a/astroid/const.py\n+++ b/astroid/const.py\n@@ -10,6 +10,7 @@\n PY310_PLUS = sys.version_info >= (3, 10)\n PY311_PLUS = sys.version_info >= (3, 11)\n PY312_PLUS = sys.version_info >= (3, 12)\n+PY313_PLUS = sys.version_info >= (3, 13)\n \n WIN32 = sys.platform == \"win32\"\n \n",
+  "problem_statement": "astroid depends on 'crypt', which is removed in Python 3.13\nStill present in git and 3.0.1.\r\nhttps://bugzilla.redhat.com/show_bug.cgi?id=2246054\r\n\r\nAccording to https://docs.python.org/3.13/whatsnew/3.13.html:\r\n\r\nPEP 594: Remove the crypt module and its private _crypt extension, deprecated in Python 3.11.\r\nThe hashlib module is a potential replacement for certain use cases.\r\nOtherwise, the following PyPI projects can be used:\r\n- bcrypt: Modern password hashing for your software and your servers.\r\n- passlib: Comprehensive password hashing framework supporting over 30 schemes.\r\n- argon2-cffi: The secure Argon2 password hashing algorithm.\r\n- legacycrypt: Wrapper to the POSIX crypt library call and associated functionality.\r\n(Contributed by Victor Stinner in gh-104773.)\n",
+  "pull_number": 2328,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/brain/test_brain.py b/tests/brain/test_brain.py\nindex eecd7716d3..12cdd5cf7d 100644\n--- a/tests/brain/test_brain.py\n+++ b/tests/brain/test_brain.py\n@@ -15,7 +15,7 @@\n from astroid import MANAGER, builder, nodes, objects, test_utils, util\n from astroid.bases import Instance\n from astroid.brain.brain_namedtuple_enum import _get_namedtuple_fields\n-from astroid.const import PY312_PLUS\n+from astroid.const import PY312_PLUS, PY313_PLUS\n from astroid.exceptions import (\n     AttributeInferenceError,\n     InferenceError,\n@@ -1976,6 +1976,7 @@ def test_oserror_model() -> None:\n     assert strerror.value == \"\"\n \n \n+@pytest.mark.skipif(PY313_PLUS, reason=\"Python >= 3.13 no longer has a crypt module\")\n def test_crypt_brain() -> None:\n     module = MANAGER.ast_from_module_name(\"crypt\")\n     dynamic_attrs = [\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/7124000a60da610010be25990132a087313fc5c6"
+}

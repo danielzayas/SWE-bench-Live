@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-841",
+  "base_image": "python:3.9",
+  "setup_commands": [
+    "pip install -r requirements.txt",
+    "pip install -e .",
+    "pip install .",
+    "pip install lazy-object-proxy==1.4.* nose pytest python-dateutil six~=1.12 wrapt>=1.11,<1.13 coverage<5 typed_ast>=1.4.0,<1.5 attr numpy && pytest",
+    "pip install \"lazy-object-proxy==1.4.*\" nose pytest python-dateutil \"six~=1.12\" \"wrapt>=1.11,<1.13\" coverage<5 typed_ast>=1.4.0,<1.5 attr numpy && pytest",
+    "pip install \"lazy-object-proxy==1.4.*\" nose pytest python-dateutil \"six~=1.12\" \"wrapt>=1.11,<1.13\" \"coverage<5\" \"typed_ast>=1.4.0,<1.5\" attr numpy && pytest",
+    "pip install \"lazy-object-proxy==1.4.*\" nose pytest python-dateutil \"six~=1.12\" \"wrapt>=1.11,<1.13\" \"coverage<5\" attr numpy && pytest"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 2,
+  "completed": true,
+  "exception": null
+}

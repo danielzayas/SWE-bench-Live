@@ -1,0 +1,21 @@
+{
+  "instance_id": "pylint-dev__astroid-1173",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "pip install -e .",
+    "pip install --upgrade pip setuptools wheel",
+    "pip install --upgrade setuptools --index-url https://pypi.org/simple",
+    "pip install -e .",
+    "pip install -e . --index-url https://pypi.org/simple",
+    "pip install -r requirements_dev.txt",
+    "pip install -r requirements_dev.txt --index-url https://pypi.org/simple",
+    "pip install -e . --index-url https://pypi.org/simple",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

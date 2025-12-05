@@ -1,0 +1,16 @@
+{
+  "instance_id": "pylint-dev__astroid-1903",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -r requirements_test.txt",
+    "pip install -e .",
+    "pip install .",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA tests/"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

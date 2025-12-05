@@ -1,0 +1,17 @@
+{
+  "instance_id": "pylint-dev__astroid-2596",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "cat requirements_dev.txt",
+    "cat requirements_minimal.txt",
+    "pip install -r requirements_minimal.txt",
+    "pip install -e .",
+    "pytest --maxfail=1 --disable-warnings -q"
+  ],
+  "test_commands": [
+    "pytest --maxfail=1 --disable-warnings -rA"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

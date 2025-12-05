@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "44bbb980f30ac0d68fa5c862ac61473fdb2ab777",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/2f336eb9b73f9ed7f08e60c0ae3a47aac2f49d8c"
+  ],
+  "created_at": "2019-03-27T17:15:00Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-659",
+  "issue_numbers": [
+    658
+  ],
+  "language": "python",
+  "patch": "diff --git a/astroid/modutils.py b/astroid/modutils.py\nindex df75a901e9..cc5fc56f49 100644\n--- a/astroid/modutils.py\n+++ b/astroid/modutils.py\n@@ -116,7 +116,7 @@ def _posix_path(path):\n         # https://github.com/PyCQA/pylint/issues/712#issuecomment-163178753\n         STD_LIB_DIRS.add(_posix_path(\"lib64\"))\n \n-EXT_LIB_DIR = get_python_lib()\n+EXT_LIB_DIRS = {get_python_lib(), get_python_lib(True)}\n IS_JYTHON = platform.python_implementation() == \"Jython\"\n BUILTIN_MODULES = dict.fromkeys(sys.builtin_module_names, True)\n \n@@ -596,8 +596,9 @@ def is_standard_module(modname, std_path=None):\n         # we assume there are no namespaces in stdlib\n         return not util.is_namespace(modname)\n     filename = _normalize_path(filename)\n-    if filename.startswith(_cache_normalize_path(EXT_LIB_DIR)):\n-        return False\n+    for path in EXT_LIB_DIRS:\n+        if filename.startswith(_cache_normalize_path(path)):\n+            return False\n     if std_path is None:\n         std_path = STD_LIB_DIRS\n     for path in std_path:\n",
+  "problem_statement": "Extension modules incorrectly classified as belonging to stdlib.\n### Steps to reproduce\r\n1. Install a platform specific extension.\r\n2. Run pylint (errors on potentially unsafe extension being scanned)\r\n\r\n### Current behavior\r\nExtensions in the platform specific location are misclassified by is_standard_module() as being in the standard library because the path shares prefix with standard library. \r\n\r\n### Expected behavior\r\nThe extension should not be considered part of the stdlib.\r\n\r\n### ``python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"`` output\r\nmaster\r\n\r\n\n",
+  "pull_number": 659,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/astroid/tests/unittest_modutils.py b/astroid/tests/unittest_modutils.py\nindex 6f1bae1454..b517422e80 100644\n--- a/astroid/tests/unittest_modutils.py\n+++ b/astroid/tests/unittest_modutils.py\n@@ -278,7 +278,7 @@ def test_4(self):\n \n     def test_custom_path(self):\n         datadir = resources.find(\"\")\n-        if datadir.startswith(modutils.EXT_LIB_DIR):\n+        if any(datadir.startswith(p) for p in modutils.EXT_LIB_DIRS):\n             self.skipTest(\"known breakage of is_standard_module on installed package\")\n \n         self.assertTrue(modutils.is_standard_module(\"data.module\", (datadir,)))\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/44bbb980f30ac0d68fa5c862ac61473fdb2ab777"
+}

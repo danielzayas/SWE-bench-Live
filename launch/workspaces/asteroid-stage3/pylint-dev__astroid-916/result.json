@@ -1,0 +1,17 @@
+{
+  "instance_id": "pylint-dev__astroid-916",
+  "base_image": "python:3.9",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "sed -n 20,50p astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy>=1.4.0 wrapt>=1.11,<1.13 typed-ast>=1.4.0,<1.5; pip install -e .; pytest tests",
+    "pip install \"lazy_object_proxy>=1.4.0\" \"wrapt>=1.11,<1.13\" \"typed-ast>=1.4.0,<1.5\"; pip install .; pip install pytest; pytest tests"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

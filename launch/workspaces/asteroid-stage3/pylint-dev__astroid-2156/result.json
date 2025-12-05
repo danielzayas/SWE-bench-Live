@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-2156",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -e .",
+    "pytest --cov",
+    "pip install -r requirements_test_min.txt",
+    "pytest --cov",
+    "pip install typing_extensions",
+    "pytest --cov"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

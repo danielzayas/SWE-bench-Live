@@ -1,0 +1,19 @@
+{
+  "instance_id": "pylint-dev__astroid-805",
+  "base_image": "python:3.6",
+  "setup_commands": [
+    "ls -l requirements.txt",
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest tests",
+    "pip install pytest",
+    "pytest tests"
+  ],
+  "test_commands": [
+    "pytest -rA tests"
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

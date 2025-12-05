@@ -1,0 +1,17 @@
+{
+  "instance_id": "pylint-dev__astroid-1614",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "pip install -r requirements_test.txt -r requirements_test_brain.txt",
+    "pip install -r requirements_test_min.txt -r requirements_test_pre_commit.txt -r requirements_test_brain.txt --no-deps",
+    "pip install -r requirements_test_min.txt -r requirements_test_pre_commit.txt",
+    "pip install -e .",
+    "pytest tests/"
+  ],
+  "test_commands": [
+    "pytest -rA tests/"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-586",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "pip install -e .",
+    "pytest --maxfail=1 --disable-warnings -q astroid",
+    "pip install pytest",
+    "pytest --maxfail=1 --disable-warnings -q astroid",
+    "head -40 README.rst",
+    "head -40 tox.ini",
+    "ls -l requirements.txt",
+    "grep install_requires setup.py -A 10",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt",
+    "pip install -e .",
+    "pytest astroid",
+    "pip install -U pytest",
+    "pip install -U pytest==7.2.2",
+    "pip install -U pytest==3.6.3",
+    "pip install atomicwrites",
+    "pip install --no-deps pytest==3.6.3",
+    "pytest astroid",
+    "pip install atomicwrites"
+  ],
+  "test_commands": [
+    "pytest -rA astroid"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

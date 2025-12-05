@@ -1,0 +1,36 @@
+{
+  "instance_id": "pylint-dev__astroid-929",
+  "base_image": "python:3.10",
+  "setup_commands": [
+    "pip install -e .",
+    "head -40 setup.py",
+    "pip install .",
+    "pip install -r requirements_test.txt",
+    "sed '/^-e /d' requirements_test_min.txt | xargs pip install",
+    "head -40 requirements_test.txt",
+    "pip install coveralls~=3.0 coverage~=5.5 pre-commit~=2.12 pytest-cov~=2.11",
+    "pip install pre-commit==2.11.1",
+    "pytest tests",
+    "pip uninstall -y typed-ast",
+    "pip list | grep pytest",
+    "pip install -U pytest",
+    "pytest -v astroid",
+    "head -40 setup.py",
+    "head -40 tox.ini",
+    "pytest --pyargs tests",
+    "pip install pytest==6.2.5",
+    "pip install pytest==6.2.4",
+    "pip install -U pytest-cov coverage",
+    "pytest --maxfail=1 --disable-warnings -q"
+  ],
+  "test_commands": [
+    "pytest tests -rA",
+    "pytest astroid -rA",
+    "pytest --version",
+    "pip list | grep pytest",
+    "pip install pytest==6.2.5 && pytest tests -rA"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

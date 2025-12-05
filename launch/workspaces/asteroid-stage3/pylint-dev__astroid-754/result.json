@@ -1,0 +1,22 @@
+{
+  "instance_id": "pylint-dev__astroid-754",
+  "base_image": "python:3.8",
+  "setup_commands": [
+    "ls -l requirements.txt",
+    "grep -A 20 \"install_requires\" setup.py",
+    "grep \"install_requires\" -A 10 setup.py",
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy==1.4.* six~=1.12 wrapt~=1.11 'typed-ast>=1.4.0,<1.5;implementation_name==\"cpython\" and python_version<\"3.8\"'",
+    "pip install -e .",
+    "pytest",
+    "pip install pytest",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 0,
+  "completed": true,
+  "exception": null
+}

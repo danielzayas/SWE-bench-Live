@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "Ah, I see how simple this is. I'm online, so I can get to it.\nI'll create a fix!\nGo for it!\n\n",
+  "base_commit": "0079ead24b1274ce8fb5141df96f7a62f92f1e39",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/70a8e6a83d303182e19d0d98269100d76c50cca2"
+  ],
+  "created_at": "2022-07-10T13:09:14Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-1701",
+  "issue_numbers": [
+    1700
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 079a2bee03..f62daaf26b 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -12,7 +12,9 @@ What's New in astroid 2.12.2?\n =============================\n Release date: TBA\n \n+* Fixed crash in modulo operations for divisions by zero.\n \n+  Closes #1700\n \n What's New in astroid 2.12.1?\n =============================\ndiff --git a/astroid/inference.py b/astroid/inference.py\nindex b7ea586361..7c1db80408 100644\n--- a/astroid/inference.py\n+++ b/astroid/inference.py\n@@ -659,7 +659,11 @@ def _invoke_binop_inference(instance, opnode, op, other, context, method_name):\n     method = methods[0]\n     context.callcontext.callee = method\n \n-    if isinstance(instance, nodes.Const) and op == \"%\":\n+    if (\n+        isinstance(instance, nodes.Const)\n+        and isinstance(instance.value, str)\n+        and op == \"%\"\n+    ):\n         return iter(_infer_old_style_string_formatting(instance, other, context))\n \n     try:\n",
+  "problem_statement": "Crash in modulo expression\n### Steps to reproduce\r\n```python\r\nclass BatchSequence:\r\n    def __init__(self):\r\n        self.batch_size = 0\r\n\r\n    def __len__(self):\r\n        return 20 % self.batch_size\r\n```\r\n\r\n### Current behavior\r\n```\r\n  File \"/Users/.../astroid/astroid/decorators.py\", line 108, in wrapped\r\n    for res in _func(node, context, **kwargs):\r\n  File \"/Users/.../astroid/astroid/inference.py\", line 480, in _filter_operation_errors\r\n    for result in infer_callable(self, context):\r\n  File \"/Users/.../astroid/astroid/inference.py\", line 817, in _infer_binop\r\n    yield from _infer_binary_operation(lhs, rhs, self, context, _get_binop_flow)\r\n  File \"/Users/.../astroid/astroid/inference.py\", line 768, in _infer_binary_operation\r\n    results = list(method())\r\n  File \"/Users/.../astroid/astroid/inference.py\", line 607, in _invoke_binop_inference\r\n    return iter(_infer_old_style_string_formatting(instance, other, context))\r\n  File \"/Users/.../astroid/astroid/inference.py\", line 594, in _infer_old_style_string_formatting\r\n    return (nodes.const_factory(instance.value % values),)\r\nZeroDivisionError: integer division or modulo by zero\r\n```\r\n### Expected behavior\r\nRegression in 957d3d686879c1775e3e257955ba3b5eb929ec6c\r\nFound in pylint primer (the old primer with `keras`, so I didn't see it yesterday when it was blocked on stdlib failures)\r\n@DanielNoord would you be able to take a look for 2.12.2?\n",
+  "pull_number": 1701,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_inference.py b/tests/unittest_inference.py\nindex b82ee8d896..4036434532 100644\n--- a/tests/unittest_inference.py\n+++ b/tests/unittest_inference.py\n@@ -6948,6 +6948,7 @@ def test_old_style_string_formatting(self, format_string: str) -> None:\n             \"\"\"\n             \"My name is %s, I'm %s\" % ((fname,)*2)\n             \"\"\",\n+            \"\"\"20 % 0\"\"\",\n         ],\n     )\n     def test_old_style_string_formatting_uninferable(self, format_string: str) -> None:\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/0079ead24b1274ce8fb5141df96f7a62f92f1e39"
+}

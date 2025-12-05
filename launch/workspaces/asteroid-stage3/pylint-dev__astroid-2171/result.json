@@ -1,0 +1,23 @@
+{
+  "instance_id": "pylint-dev__astroid-2171",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "pip install -r requirements_full.txt",
+    "head -40 requirements_minimal.txt",
+    "pip install tbump==6.9.0",
+    "pip install -r requirements_minimal.txt && pip install -r requirements_dev.txt",
+    "pip install --no-deps -r requirements_minimal.txt && pip install -r requirements_dev.txt",
+    "sed -i 's/tbump~=6.10/tbump==6.9.0/' requirements_minimal.txt",
+    "pip install -r requirements_minimal.txt && pip install -r requirements_dev.txt",
+    "sed -i 's/pytest-cov~=4.1/pytest-cov==4.0.0/' requirements_minimal.txt",
+    "pip install -r requirements_minimal.txt && pip install -r requirements_dev.txt",
+    "pip install -e .",
+    "pytest"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

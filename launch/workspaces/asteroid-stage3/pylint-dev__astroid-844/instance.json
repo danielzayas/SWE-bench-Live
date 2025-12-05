@@ -1,0 +1,22 @@
+{
+  "all_hints_text": "I believe [this change](https://github.com/timmartin/astroid/commit/ffa6bcb757797c3ab2aebd8b9f29018a7022d9ea) will fix this, I just need to write a proper PR.\r\n\r\nI think the problem is that when we run multiple inferences in `_inferred_bases`, the context is reused which means the second and subsequent inferences have bad data. Cloning the context before running the inference seems to address this.\n@timmartin thanks for the report. I can reproduce it.\r\nOne interesting thing is:\r\n```\r\nimport astroid\r\n\r\nclass_node = astroid.extract_node(\"\"\"\r\nfrom other import A, B\r\n\r\nclass Child(A, B): #@\r\n    pass\r\n\"\"\")\r\n\r\nprint([cls.name for cls in class_node.mro()])\r\n```\r\nprints: `['Child', 'A', 'B', 'object']`\nYes, that's correct. I believe this is because in the first case, there is non-trivial inference that must be applied to each expression (`other.A`, `other.B`) to determine its type, and sharing the context between the two `infer` calls causes the second to fail. In the second case, the shared context doesn't affect the second `infer` call, either because the two expressions are so trivial or because there's no overlap between the names in the two expressions. I'm mostly guessing this from context, I don't yet properly understand how the inference works.\n\n",
+  "base_commit": "46297774d1a0e57815500a50b2323ea906bd50da",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/7f1d5134d89aab9b3e49030676637debfd731dbb",
+    "https://github.com/pylint-dev/astroid/commit/c89dc0102bfe7a6e72b21e213742bdb982b438cc",
+    "https://github.com/pylint-dev/astroid/commit/c9c579206a21a00acb7f8fcca0d8f530e3daedef"
+  ],
+  "created_at": "2020-10-13T18:57:21Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-844",
+  "issue_numbers": [
+    843
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex a5a0be55d2..27a61f00ec 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -53,6 +53,10 @@ Release Date: TBA\n \n * Fixed exception-chaining error messages.\n \n+* Fix failure to infer base class type with multiple inheritance and qualified names\n+\n+  Fixes #843\n+\n * Reduce memory usage of astroid's module cache.\n \n What's New in astroid 2.4.3?\ndiff --git a/astroid/scoped_nodes.py b/astroid/scoped_nodes.py\nindex 5c94196689..a44e6282e3 100644\n--- a/astroid/scoped_nodes.py\n+++ b/astroid/scoped_nodes.py\n@@ -2858,7 +2858,7 @@ def _inferred_bases(self, context=None):\n \n         for stmt in self.bases:\n             try:\n-                baseobj = next(stmt.infer(context=context))\n+                baseobj = next(stmt.infer(context=context.clone()))\n             except exceptions.InferenceError:\n                 continue\n             if isinstance(baseobj, bases.Instance):\n",
+  "problem_statement": "Incorrect MRO inferred with multiple inheritance from module-qualified classes\n### Steps to reproduce\r\n\r\nFile `other.py`:\r\n\r\n    class A:\r\n        pass\r\n\r\n    class B:\r\n        pass\r\n\r\nThen run:\r\n\r\n    import astroid\r\n\r\n    class_node = astroid.extract_node(\"\"\"\r\n    import other\r\n\r\n    class Child(other.A, other.B): #@\r\n        pass\r\n    \"\"\")\r\n\r\n    print([cls.name for cls.name in class_node.mro()])\r\n\r\n### Current behavior\r\n\r\n    ['Child', 'A', 'object']\r\n\r\n### Expected behavior\r\n\r\n    ['Child', 'A', 'B', 'object']\r\n\r\n### ``python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"`` output\r\n\r\n2.5.0\n",
+  "pull_number": 844,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_scoped_nodes.py b/tests/unittest_scoped_nodes.py\nindex c4597fa686..aef1a671fe 100644\n--- a/tests/unittest_scoped_nodes.py\n+++ b/tests/unittest_scoped_nodes.py\n@@ -1417,6 +1417,22 @@ def __init__(self):\n             ],\n         )\n \n+    def test_mro_with_attribute_classes(self):\n+        cls = builder.extract_node(\n+            \"\"\"\n+        class A:\n+            pass\n+        class B:\n+            pass\n+        scope = object()\n+        scope.A = A\n+        scope.B = B\n+        class C(scope.A, scope.B):\n+            pass\n+        \"\"\"\n+        )\n+        self.assertEqualMro(cls, [\"C\", \"A\", \"B\", \"object\"])\n+\n     def test_generator_from_infer_call_result_parent(self):\n         func = builder.extract_node(\n             \"\"\"\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/46297774d1a0e57815500a50b2323ea906bd50da"
+}

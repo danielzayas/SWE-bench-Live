@@ -1,0 +1,20 @@
+{
+  "all_hints_text": "@federicobond thanks for this suggestion!\n\n",
+  "base_commit": "d19758108727e1fd11e343d857d060d4f80655d1",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/5d706d40ce55157b01636791e18d7a00e3fe5d49"
+  ],
+  "created_at": "2021-04-12T04:26:06Z",
+  "hints_text": "@federicobond thanks for this suggestion!\n\n",
+  "instance_id": "pylint-dev__astroid-943",
+  "issue_numbers": [
+    898
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 63e9816d51..4343be3fee 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -23,6 +23,11 @@ Release Date: TBA\n \n   Closes #926\n \n+* Add ``kind`` field to ``Const`` nodes, matching the structure of the built-in ast Const.\n+  The kind field is \"u\" if the literal is a u-prefixed string, and ``None`` otherwise.\n+\n+  Closes #898\n+\n \n What's New in astroid 2.5.6?\n ============================\ndiff --git a/astroid/node_classes.py b/astroid/node_classes.py\nindex 7faf681275..f8d0b23c52 100644\n--- a/astroid/node_classes.py\n+++ b/astroid/node_classes.py\n@@ -2557,7 +2557,7 @@ class Const(mixins.NoChildrenMixin, NodeNG, bases.Instance):\n \n     _other_fields = (\"value\",)\n \n-    def __init__(self, value, lineno=None, col_offset=None, parent=None):\n+    def __init__(self, value, lineno=None, col_offset=None, parent=None, kind=None):\n         \"\"\"\n         :param value: The value that the constant represents.\n         :type value: object\n@@ -2571,12 +2571,12 @@ def __init__(self, value, lineno=None, col_offset=None, parent=None):\n \n         :param parent: The parent node in the syntax tree.\n         :type parent: NodeNG or None\n-        \"\"\"\n-        self.value = value\n-        \"\"\"The value that the constant represents.\n \n-        :type: object\n+        :param kind: The string prefix. \"u\" for u-prefixed strings and ``None`` otherwise. Python 3.8+ only.\n+        :type kind: str or None\n         \"\"\"\n+        self.value = value\n+        self.kind = kind\n \n         super().__init__(lineno, col_offset, parent)\n \ndiff --git a/astroid/rebuilder.py b/astroid/rebuilder.py\nindex bb6a23b852..2532b61d1f 100644\n--- a/astroid/rebuilder.py\n+++ b/astroid/rebuilder.py\n@@ -425,6 +425,7 @@ def visit_const(self, node, parent):\n             getattr(node, \"lineno\", None),\n             getattr(node, \"col_offset\", None),\n             parent,\n+            getattr(node, \"kind\", None),\n         )\n \n     def visit_continue(self, node, parent):\n@@ -814,6 +815,7 @@ def visit_constant(self, node, parent):\n             getattr(node, \"lineno\", None),\n             getattr(node, \"col_offset\", None),\n             parent,\n+            getattr(node, \"kind\", None),\n         )\n \n     # Not used in Python 3.8+.\n",
+  "problem_statement": "Add kind field to Const\nPython 3.8 added the optional `kind` field to `ast.Constant`. This is used to store the string prefix, like `u` for `u\"foo\"`. `astroid.Const` should include this field too.\n",
+  "pull_number": 943,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_nodes.py b/tests/unittest_nodes.py\nindex 4ce73be9b8..14f713a51b 100644\n--- a/tests/unittest_nodes.py\n+++ b/tests/unittest_nodes.py\n@@ -542,6 +542,19 @@ def test_str(self):\n     def test_unicode(self):\n         self._test(\"a\")\n \n+    @pytest.mark.skipif(\n+        not PY38, reason=\"kind attribute for ast.Constant was added in 3.8\"\n+    )\n+    def test_str_kind(self):\n+        node = builder.extract_node(\n+            \"\"\"\n+            const = u\"foo\"\n+        \"\"\"\n+        )\n+        assert isinstance(node.value, nodes.Const)\n+        assert node.value.value == \"foo\"\n+        assert node.value.kind, \"u\"\n+\n     def test_copy(self):\n         \"\"\"\n         Make sure copying a Const object doesn't result in infinite recursion\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/d19758108727e1fd11e343d857d060d4f80655d1"
+}

@@ -1,0 +1,18 @@
+{
+  "instance_id": "pylint-dev__astroid-2206",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "python3 -m venv venv",
+    ". venv/bin/activate && pip install -U pip setuptools wheel && pip install -U -r requirements_full.txt",
+    "apt-get update && apt-get install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools",
+    ". venv/bin/activate && pip install -U -r requirements_full.txt && pip install -e .",
+    ". venv/bin/activate && pip install -U -r requirements_minimal.txt && pip install -e .",
+    ". venv/bin/activate && pytest --cov"
+  ],
+  "test_commands": [
+    ". venv/bin/activate && pytest -rA"
+  ],
+  "duration": 1,
+  "completed": true,
+  "exception": null
+}

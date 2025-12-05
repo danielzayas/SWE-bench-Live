@@ -1,0 +1,24 @@
+{
+  "all_hints_text": "> could raise an AstroidTypeError to indicate that the template formatting is invalid\r\n\r\nNote: is this situation well-defined enough to determine that every possible `AttributeError` is an indication of an underlying type mismatch?  I'm not sure..\n\n",
+  "base_commit": "344454c8ee25d41a4ce12980bc85ba604b7835dd",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/fd8ddef773e8dc0942479d6f0c17faf20bd35d70",
+    "https://github.com/pylint-dev/astroid/commit/8a52789b451f988acb492fd2a5b73edaeaea2c75",
+    "https://github.com/pylint-dev/astroid/commit/ce1a07eb3361857e8e11ceb7cd3904ed4abc0c10",
+    "https://github.com/pylint-dev/astroid/commit/537374037b6af454148a9b4bb79f51f4b9cbdeb1",
+    "https://github.com/pylint-dev/astroid/commit/0d64967f56eba0bf2d4eb75cbaa5f3a1ca8d9688"
+  ],
+  "created_at": "2022-12-15T02:58:17Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-1903",
+  "issue_numbers": [
+    1902
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 99437d4565..4cc504fcec 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -28,6 +28,10 @@ Release date: TBA\n \n   Refs PyCQA/pylint#7868\n \n+* Handle ``AttributeError`` during ``str.format`` template inference tip evaluation\n+\n+  Closes PyCQA/pylint#1902\n+\n What's New in astroid 2.12.13?\n ==============================\n Release date: 2022-11-19\ndiff --git a/astroid/brain/brain_builtin_inference.py b/astroid/brain/brain_builtin_inference.py\nindex e2455e54b0..a872b38c71 100644\n--- a/astroid/brain/brain_builtin_inference.py\n+++ b/astroid/brain/brain_builtin_inference.py\n@@ -952,7 +952,8 @@ def _infer_str_format_call(\n \n     try:\n         formatted_string = format_template.format(*pos_values, **keyword_values)\n-    except (IndexError, KeyError, TypeError, ValueError):\n+    except (AttributeError, IndexError, KeyError, TypeError, ValueError):\n+        # AttributeError: processing a replacement field using the arguments failed\n         # IndexError: there are too few arguments to interpolate\n         # TypeError: Unsupported format string\n         # ValueError: Unknown format code\n",
+  "problem_statement": "Unhandled AttributeError during str.format template evaluation\n### Steps to reproduce\r\n\r\n1. Use `astroid` to parse code that provides arguments to a `str.format` template that attempts to access non-existent attributes\r\n\r\n```py\r\ndaniel_age = 12\r\n\"My name is {0.name}\".format(daniel_age)  # int literal has no 'name' attribute\r\n```\r\n\r\n### Current behavior\r\n\r\n1. unhandled `AttributeError` when it attempts to [evaluate the templated string](https://github.com/PyCQA/astroid/blob/8bdec591f228e7db6a0be66b6ca814227ff50001/astroid/brain/brain_builtin_inference.py#L956)\r\n\r\n### Expected behavior\r\n\r\n1. could raise an `AstroidTypeError` to indicate that the template formatting is invalid\r\n\r\n### `python -c \"from astroid import __pkginfo__; print(__pkginfo__.version)\"` output\r\n\r\n`2.13.0-dev0`\r\n\r\nRelates to pycqa/pylint#7939.\n",
+  "pull_number": 1903,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_brain_builtin.py b/tests/unittest_brain_builtin.py\nindex 6f7038fb99..d14c72f8a7 100644\n--- a/tests/unittest_brain_builtin.py\n+++ b/tests/unittest_brain_builtin.py\n@@ -109,6 +109,10 @@ def test_string_format(self, format_string: str) -> None:\n             \"\"\"\n             \"My hex format is {:4x}\".format('1')\n             \"\"\",\n+            \"\"\"\n+            daniel_age = 12\n+            \"My name is {0.name}\".format(daniel_age)\n+            \"\"\",\n         ],\n     )\n     def test_string_format_uninferable(self, format_string: str) -> None:\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/344454c8ee25d41a4ce12980bc85ba604b7835dd"
+}

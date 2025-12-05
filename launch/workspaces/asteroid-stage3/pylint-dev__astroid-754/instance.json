@@ -1,0 +1,26 @@
+{
+  "all_hints_text": "Thanks for opening an issue @thisch ! This is a matter of exposing a new `ast_from_string` API in `AstroidManager` which can look like:\r\n```\r\n    def ast_from_string(self, data, modname=\"\", path=None):\r\n        \"\"\"Build astroid from source code string.\"\"\"\r\n        from astroid.builder import AstroidBuilder\r\n\r\n        return AstroidBuilder(self).string_build(data, modname, path=path)\r\n```\r\n\r\nIs this something that you'd be interested in working on? \nCurrently not. I'll wait a bit and work on it if no one else volunteers.\n\n",
+  "base_commit": "00bcf7b817ed459ee617b8af8843aca18d72fe04",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/a7a2f6eb588c37cc74a59496c479f79be4c39f78",
+    "https://github.com/pylint-dev/astroid/commit/4f545de08526c918c323fa0488ba7cbd34631f40",
+    "https://github.com/pylint-dev/astroid/commit/e950c473cba198b732748907d1f57b6cc884583e",
+    "https://github.com/pylint-dev/astroid/commit/d7be667ebce538a9df2b79bed5ef4635b89b37e0",
+    "https://github.com/pylint-dev/astroid/commit/277a8f2c631e9b3bb41e7cb2619435f9581459f2",
+    "https://github.com/pylint-dev/astroid/commit/ea3f69d26a6a6166cb3e2216d0aa5f273827bdc7",
+    "https://github.com/pylint-dev/astroid/commit/b21112d83eb1a926f278c27145296cafd4f88a98"
+  ],
+  "created_at": "2020-02-12T06:42:38Z",
+  "hints_text": "Thanks for opening an issue @thisch ! This is a matter of exposing a new `ast_from_string` API in `AstroidManager` which can look like:\r\n```\r\n    def ast_from_string(self, data, modname=\"\", path=None):\r\n        \"\"\"Build astroid from source code string.\"\"\"\r\n        from astroid.builder import AstroidBuilder\r\n\r\n        return AstroidBuilder(self).string_build(data, modname, path=path)\r\n```\r\n\r\nIs this something that you'd be interested in working on? \nCurrently not. I'll wait a bit and work on it if no one else volunteers.\n\n",
+  "instance_id": "pylint-dev__astroid-754",
+  "issue_numbers": [
+    725
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 884e83b273..9a5bf3dbb8 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -6,6 +6,10 @@ What's New in astroid 2.4.0?\n ============================\n Release Date: TBA\n \n+* Expose a ast_from_string method in AstroidManager, which will accept\n+  source code as a string and return the corresponding astroid object\n+\n+  Closes PyCQA/astroid#725\n * Infer qualified ``classmethod`` as a classmethod.\n \n   Close PyCQA/pylint#3417\ndiff --git a/astroid/manager.py b/astroid/manager.py\nindex 5e25e6e28a..4e1452ef71 100644\n--- a/astroid/manager.py\n+++ b/astroid/manager.py\n@@ -99,6 +99,13 @@ def ast_from_file(self, filepath, modname=None, fallback=True, source=False):\n             \"Unable to build an AST for {path}.\", path=filepath\n         )\n \n+    def ast_from_string(self, data, modname=\"\", filepath=None):\n+        \"\"\" Given some source code as a string, return its corresponding astroid object\"\"\"\n+        # pylint: disable=import-outside-toplevel; circular import\n+        from astroid.builder import AstroidBuilder\n+\n+        return AstroidBuilder(self).string_build(data, modname, filepath)\n+\n     def _build_stub_module(self, modname):\n         # pylint: disable=import-outside-toplevel; circular import\n         from astroid.builder import AstroidBuilder\n",
+  "problem_statement": "Create astroid module from a string using AstroidManager\nFor the read-from-stdin feature in pylint an AST is constructed using \r\n\r\n```py\r\nAstroidBuilder(MANAGER).string_build(data, modname, filepath)\r\n```\r\nwhereas for regular modules it is constructed using\r\n\r\n```py\r\nMANAGER.ast_from_file(filepath, modname, source=True)\r\n```\r\nSee the get_ast method in https://github.com/PyCQA/pylint/pull/3257/files/5b24700e7bf84d1f2ae6fcd468acf5a9f6f1c458\r\n\r\nThe module docstring of astroid.manager suggests that the Manager should be used for both cases in pylint. \r\n\r\nTherefore, AstroidManager should provide a way to create an AST from a string.\r\n\n",
+  "pull_number": 754,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_manager.py b/tests/unittest_manager.py\nindex b56a05802f..f22414c409 100644\n--- a/tests/unittest_manager.py\n+++ b/tests/unittest_manager.py\n@@ -67,6 +67,17 @@ def test_ast_from_file_name_astro_builder_exception(self):\n             exceptions.AstroidBuildingError, self.manager.ast_from_file, \"unhandledName\"\n         )\n \n+    def test_ast_from_string(self):\n+        filepath = unittest.__file__\n+        dirname = os.path.dirname(filepath)\n+        modname = os.path.basename(dirname)\n+        with open(filepath, \"r\") as file:\n+            data = file.read()\n+            ast = self.manager.ast_from_string(data, modname, filepath)\n+            self.assertEqual(ast.name, \"unittest\")\n+            self.assertEqual(ast.file, filepath)\n+            self.assertIn(\"unittest\", self.manager.astroid_cache)\n+\n     def test_do_not_expose_main(self):\n         obj = self.manager.ast_from_module_name(\"__main__\")\n         self.assertEqual(obj.name, \"__main__\")\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/00bcf7b817ed459ee617b8af8843aca18d72fe04"
+}

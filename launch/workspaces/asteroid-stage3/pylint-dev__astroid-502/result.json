@@ -1,0 +1,31 @@
+{
+  "instance_id": "pylint-dev__astroid-502",
+  "base_image": "python:3.7",
+  "setup_commands": [
+    "head -40 setup.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install lazy_object_proxy six wrapt",
+    "pip install -e .",
+    "pytest --maxfail=1 --disable-warnings -q astroid",
+    "pip install pytest",
+    "pytest --maxfail=1 --disable-warnings -q astroid",
+    "python3.6 -m pip install -e . pytest",
+    "head -40 README.rst",
+    "head -40 setup.py",
+    "sed -n 41,60p setup.py",
+    "grep -E 'install_requires|extras_require' setup.py -A 10",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pytest --maxfail=1 --disable-warnings -q astroid",
+    "pip install -U astroid",
+    "pip install -e git+https://github.com/PyCQA/astroid@master#egg=astroid",
+    "git ls-remote --heads https://github.com/PyCQA/astroid",
+    "pip install -e git+https://github.com/PyCQA/astroid@main#egg=astroid"
+  ],
+  "test_commands": [
+    "pytest -rA astroid"
+  ],
+  "duration": 1,
+  "completed": false,
+  "exception": "Launch failed"
+}

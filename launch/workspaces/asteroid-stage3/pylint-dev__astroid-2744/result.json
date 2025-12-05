@@ -1,0 +1,15 @@
+{
+  "instance_id": "pylint-dev__astroid-2744",
+  "base_image": "python:3.9",
+  "setup_commands": [
+    "pip install -r requirements_full.txt",
+    "pip install -e .",
+    "pytest --cov"
+  ],
+  "test_commands": [
+    "pytest -rA"
+  ],
+  "duration": 2,
+  "completed": true,
+  "exception": null
+}

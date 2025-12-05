@@ -1,0 +1,26 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "abf9d0e4e63d1098436602804548d07a0909ece1",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/7d044a4fa2c1ae509164d0e318136089be36aabf",
+    "https://github.com/pylint-dev/astroid/commit/225039dd8e4036afeb7db7e918e6f82d121bcfd4",
+    "https://github.com/pylint-dev/astroid/commit/f9c2900c4e2d4c0b0032ea8c42878afcaa2c19e6",
+    "https://github.com/pylint-dev/astroid/commit/af7170532077c241b24109cd74bb8fc2cc98564f",
+    "https://github.com/pylint-dev/astroid/commit/d5870a1bbef5c9f40a5eab2a7c66e71ac61c54e2",
+    "https://github.com/pylint-dev/astroid/commit/e408020eebc84462333a1fa8b5672e31315163bf",
+    "https://github.com/pylint-dev/astroid/commit/42e62497633c8b9ebd06eeb4a1fcdc35b21e1c2d"
+  ],
+  "created_at": "2021-01-24T11:26:24Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-885",
+  "issue_numbers": [
+    855
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 02852c6978..9ff42a6e77 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -2,14 +2,18 @@\n astroid's ChangeLog\n ===================\n \n+What's New in astroid 2.5.0?\n+============================\n+Release Date: TBA\n+\n+* Enrich the ``brain_collection`` module so that ``__class_getitem__`` method is added to `deque` for\n+  ``python``\u00a0version above 3.9.\n+\n * The ``context.path`` is now a ``dict`` and the ``context.push`` method\n   returns ``True`` if the node has been visited a certain amount of times.\n \n   Close #669\n \n-What's New in astroid 2.5.0?\n-============================\n-Release Date: TBA\n * Adds a brain for type object so that it is possible to write `type[int]` in annotation.\n \n   Fixes PyCQA/pylint#4001\ndiff --git a/astroid/brain/brain_collections.py b/astroid/brain/brain_collections.py\nindex 6594e0c7ac..229969c5b0 100644\n--- a/astroid/brain/brain_collections.py\n+++ b/astroid/brain/brain_collections.py\n@@ -4,6 +4,7 @@\n # Copyright (c) 2017 Derek Gustafson <degustaf@gmail.com>\n # Copyright (c) 2018 Ioana Tagirta <ioana.tagirta@gmail.com>\n # Copyright (c) 2019 Hugo van Kemenade <hugovk@users.noreply.github.com>\n+# Copyright (c) 2021 Julien Palard <julien@palard.fr>\n \n # Licensed under the LGPL: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html\n # For details: https://github.com/PyCQA/astroid/blob/master/COPYING.LESSER\n@@ -12,6 +13,9 @@\n import astroid\n \n \n+PY39 = sys.version_info >= (3, 9)\n+\n+\n def _collections_transform():\n     return astroid.parse(\n         \"\"\"\n@@ -61,6 +65,10 @@ def __iadd__(self, other): pass\n         def __mul__(self, other): pass\n         def __imul__(self, other): pass\n         def __rmul__(self, other): pass\"\"\"\n+    if PY39:\n+        base_deque_class += \"\"\"\n+        @classmethod\n+        def __class_getitem__(self, item): pass\"\"\"\n     return base_deque_class\n \n \n",
+  "problem_statement": "deque misses __class_getitem__\nIn `brain_collections.py`, deque misses its `__class_getitem__`, implemented in Python 3.9.\r\n\r\nShould it be added with a test version, so astroid \"knows\" that it's not present in Python 3.8 but is in Python 3.9?\r\n\r\nRelated to: https://github.com/PyCQA/pylint/issues/3951\r\n\n",
+  "pull_number": 885,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_brain.py b/tests/unittest_brain.py\nindex e6ff69289a..1c004a06cf 100644\n--- a/tests/unittest_brain.py\n+++ b/tests/unittest_brain.py\n@@ -141,6 +141,17 @@ def test_deque_py35methods(self):\n         self.assertIn(\"insert\", inferred.locals)\n         self.assertIn(\"index\", inferred.locals)\n \n+    @test_utils.require_version(maxver=\"3.8\")\n+    def test_deque_not_py39methods(self):\n+        inferred = self._inferred_queue_instance()\n+        with self.assertRaises(astroid.exceptions.AttributeInferenceError):\n+            inferred.getattr(\"__class_getitem__\")\n+\n+    @test_utils.require_version(minver=\"3.9\")\n+    def test_deque_py39methods(self):\n+        inferred = self._inferred_queue_instance()\n+        self.assertTrue(inferred.getattr(\"__class_getitem__\"))\n+\n \n class OrderedDictTest(unittest.TestCase):\n     def _inferred_ordered_dict_instance(self):\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/abf9d0e4e63d1098436602804548d07a0909ece1"
+}

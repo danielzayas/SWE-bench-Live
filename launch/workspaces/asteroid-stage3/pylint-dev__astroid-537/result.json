@@ -1,0 +1,32 @@
+{
+  "instance_id": "pylint-dev__astroid-537",
+  "base_image": "python:3.11",
+  "setup_commands": [
+    "ls -l requirements.txt",
+    "grep -A 10 'install_requires' setup.py",
+    "grep -E 'install_requires|extras_require' setup.py",
+    "cat astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pip install --upgrade pip setuptools wheel",
+    "pip config list",
+    "pip install -e . --index-url https://pypi.org/simple --trusted-host pypi.org",
+    "head -40 setup.py",
+    "head -20 astroid/__pkginfo__.py",
+    "head -40 astroid/__pkginfo__.py",
+    "pip install -e .",
+    "pip install --upgrade setuptools",
+    "pip config list",
+    "pip install -e . --index-url https://pypi.org/simple --trusted-host pypi.org",
+    "sed -i \"s/python_requires='>=3.4.*'/python_requires='>=3.4'/\" setup.py",
+    "pip install -e . --index-url https://pypi.org/simple --trusted-host pypi.org",
+    "pytest --pyargs astroid",
+    "pip install pytest",
+    "pytest --pyargs astroid"
+  ],
+  "test_commands": [
+    "pytest --pyargs astroid -rA"
+  ],
+  "duration": 0,
+  "completed": false,
+  "exception": "Launch failed"
+}

@@ -1,0 +1,26 @@
+{
+  "all_hints_text": "\n\n",
+  "base_commit": "0d1211558670cfefd95b39984b8d5f7f34837f32",
+  "commit_urls": [
+    "https://github.com/pylint-dev/astroid/commit/d4ded268a050aabe5753fc7e02f3fbb418b4c012",
+    "https://github.com/pylint-dev/astroid/commit/459691ad9415933715e204594bbae554fe37a88c",
+    "https://github.com/pylint-dev/astroid/commit/a4115a206016ee75b9fbda10a6be98b61df1b9e8",
+    "https://github.com/pylint-dev/astroid/commit/69fe5dba76bc84a8e6bd6894d171d0aa9e6b70cf",
+    "https://github.com/pylint-dev/astroid/commit/2707f098b2bede36068655803064a836d7c2b6d0",
+    "https://github.com/pylint-dev/astroid/commit/199385ee861d1ab8700d2a34572699f1fbdf5246",
+    "https://github.com/pylint-dev/astroid/commit/917ee0d5cf0765e4135b7bc85a0a0302dd8cd98f"
+  ],
+  "created_at": "2021-12-29T21:06:15Z",
+  "hints_text": "\n\n",
+  "instance_id": "pylint-dev__astroid-1321",
+  "issue_numbers": [
+    1313
+  ],
+  "language": "python",
+  "patch": "diff --git a/ChangeLog b/ChangeLog\nindex 76c15f0f38..277ff38411 100644\n--- a/ChangeLog\n+++ b/ChangeLog\n@@ -24,6 +24,10 @@ Release date: TBA\n \n * Require Python 3.6.2 to use astroid.\n \n+* Removed custom ``distutils`` handling for resolving paths to submodules.\n+\n+  Ref #1321\n+\n * Fix ``deque.insert()`` signature in ``collections`` brain.\n \n   Closes #1260\ndiff --git a/astroid/interpreter/_import/spec.py b/astroid/interpreter/_import/spec.py\nindex 43f00153a3..57bab9f434 100644\n--- a/astroid/interpreter/_import/spec.py\n+++ b/astroid/interpreter/_import/spec.py\n@@ -17,7 +17,6 @@\n \n import abc\n import collections\n-import distutils\n import enum\n import importlib.machinery\n import os\n@@ -161,12 +160,6 @@ def contribute_to_path(self, spec, processed):\n                 for p in sys.path\n                 if os.path.isdir(os.path.join(p, *processed))\n             ]\n-        # We already import distutils elsewhere in astroid,\n-        # so if it is the same module, we can use it directly.\n-        elif spec.name == \"distutils\" and spec.location in distutils.__path__:\n-            # distutils is patched inside virtualenvs to pick up submodules\n-            # from the original Python, not from the virtualenv itself.\n-            path = list(distutils.__path__)\n         else:\n             path = [spec.location]\n         return path\n",
+  "problem_statement": "Fix Github Action for the new version of setuptools\nCurrently the pipeline is broken for the new version of python 3.10 on Windows:\r\n```\r\n\r\n================================== FAILURES ===================================\r\n_________ ModuleFileTest.test_find_distutils_submodules_in_virtualenv _________\r\n\r\nself = <tests.unittest_modutils.ModuleFileTest testMethod=test_find_distutils_submodules_in_virtualenv>\r\n\r\n    def test_find_distutils_submodules_in_virtualenv(self) -> None:\r\n        found_spec = spec.find_spec([\"distutils\", \"version\"])\r\n>       self.assertEqual(found_spec.location, distutils.version.__file__)\r\nE       AssertionError: 'C:\\\\hostedtoolcache\\\\windows\\\\Python\\\\3.1[32 chars]n.py' != 'D:\\\\a\\\\astroid\\\\astroid\\\\venv\\\\lib\\\\site-[40 chars]n.py'\r\nE       - C:\\hostedtoolcache\\windows\\Python\\3.10.1\\x64\\lib\\distutils\\version.py\r\nE       + D:\\a\\astroid\\astroid\\venv\\lib\\site-packages\\setuptools\\_distutils\\version.py\r\n```\r\n\n",
+  "pull_number": 1321,
+  "repo": "pylint-dev/astroid",
+  "test_patch": "diff --git a/tests/unittest_modutils.py b/tests/unittest_modutils.py\nindex a8107f7095..1cd7878432 100644\n--- a/tests/unittest_modutils.py\n+++ b/tests/unittest_modutils.py\n@@ -22,7 +22,6 @@\n \"\"\"\n unit tests for module modutils (module manipulation utilities)\n \"\"\"\n-import distutils.version\n import email\n import os\n import shutil\n@@ -72,10 +71,6 @@ def test_find_egg_module(self) -> None:\n             [\"data\", \"MyPyPa-0.1.0-py2.5.egg\", self.package],\n         )\n \n-    def test_find_distutils_submodules_in_virtualenv(self) -> None:\n-        found_spec = spec.find_spec([\"distutils\", \"version\"])\n-        self.assertEqual(found_spec.location, distutils.version.__file__)\n-\n \n class LoadModuleFromNameTest(unittest.TestCase):\n     \"\"\"load a python module from it's name\"\"\"\n",
+  "commit_url": "https://github.com/pylint-dev/astroid/tree/0d1211558670cfefd95b39984b8d5f7f34837f32"
+}
