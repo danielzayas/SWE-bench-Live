@@ -352,6 +352,7 @@ def get_p2p_f2p(pre_test_map, post_test_map):
    - Collects all validated instances with both FAIL_TO_PASS and PASS_TO_PASS tests
    - Adds difficulty metrics (files, hunks, lines changed in patch)
    - Outputs: `full-{date}.jsonl`
+   - Example command: `python swebench/collect/produce/make_full.py --input-jsonl gold/asteroid-stage4-rerun.jsonl --output-file datasets/full-asteroid-stage4-rerun.jsonl`
 
 #### Full Dataset Data Format
 
