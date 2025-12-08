@@ -1,0 +1,26 @@
+2025-12-04 16:56:49,524 - Using language: python
+2025-12-04 16:57:04,251 - Potential files: ['.github/workflows/backport.yml', 'doc/requirements.txt', '.github/workflows/codeql-analysis.yml', 'README.rst', '.github/workflows/ci.yaml', 'setup.cfg', 'requirements_minimal.txt', 'doc/conf.py', '.github/workflows/release-tests.yml', 'requirements_dev.txt', '.github/workflows/release.yml', '.pre-commit-config.yaml', 'pyproject.toml', 'requirements_full.txt', 'tox.ini']
+2025-12-04 16:57:04,253 - Start determine relevance of these files...
+2025-12-04 16:57:05,162 - File: .github/workflows/backport.yml - <rel>No</rel>
+2025-12-04 16:57:05,534 - File: doc/requirements.txt - <rel>No</rel>
+2025-12-04 16:58:19,956 - Error determining file: .github/workflows/codeql-analysis.yml
+2025-12-04 16:59:34,774 - Error determining file: README.rst
+2025-12-04 17:00:50,100 - Error determining file: .github/workflows/ci.yaml
+2025-12-04 17:02:05,829 - Error determining file: setup.cfg
+2025-12-04 17:03:19,685 - Error determining file: requirements_minimal.txt
+2025-12-04 17:04:34,747 - Error determining file: doc/conf.py
+2025-12-04 17:05:49,666 - Error determining file: .github/workflows/release-tests.yml
+2025-12-04 17:07:04,548 - Error determining file: requirements_dev.txt
+2025-12-04 17:08:18,946 - Error determining file: .github/workflows/release.yml
+2025-12-04 17:09:33,565 - Error determining file: .pre-commit-config.yaml
+2025-12-04 17:10:47,750 - Error determining file: pyproject.toml
+2025-12-04 17:12:02,648 - Error determining file: requirements_full.txt
+2025-12-04 17:13:16,597 - Error determining file: tox.ini
+2025-12-04 17:13:16,601 - Located related files: []
+2025-12-04 17:14:30,323 - Base image missing from state, defaulting to python:3.11 for language python
+2025-12-04 17:14:30,326 - Starting bash session in container based on image: python:3.11
+2025-12-04 17:14:35,959 - Session started: <launch.runtime.SetupRuntime object at 0x1143a4b40>
+2025-12-04 17:14:35,992 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-2240/repo
+2025-12-04 17:14:35,993 - Setting up environment for language: python
+2025-12-04 17:14:38,634 - Language-specific server started
+2025-12-04 17:14:38,653 - ----------Start setup conversation----------

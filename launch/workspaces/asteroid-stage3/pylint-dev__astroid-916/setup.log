@@ -1,0 +1,25 @@
+2025-12-04 15:11:13,601 - Using language: python
+2025-12-04 15:11:15,482 - Potential files: ['README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'pytest.ini', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 15:11:15,483 - Start determine relevance of these files...
+2025-12-04 15:11:15,790 - File: README.rst - <rel>Yes</rel>
+2025-12-04 15:11:16,133 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 15:11:16,528 - File: setup.cfg - <rel>No</rel>
+2025-12-04 15:11:17,086 - File: appveyor.yml - <rel>No</rel>
+2025-12-04 15:11:17,583 - File: pytest.ini - <rel>No</rel>
+2025-12-04 15:11:18,077 - File: setup.py - <rel>Yes</rel>
+2025-12-04 15:11:18,545 - File: .pre-commit-config.yaml - <rel>Yes</rel>
+2025-12-04 15:11:18,958 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 15:11:18,960 - Located related files: ['README.rst', '.travis.yml', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 15:11:22,629 - Selected base image: python:3.9
+2025-12-04 15:11:22,638 - Starting bash session in container based on image: python:3.9
+2025-12-04 15:11:30,732 - Session started: <launch.runtime.SetupRuntime object at 0x1146ef3f0>
+2025-12-04 15:11:30,757 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-916/repo
+2025-12-04 15:11:30,758 - Setting up environment for language: python
+2025-12-04 15:11:33,113 - Language-specific server started
+2025-12-04 15:11:33,116 - ----------Start setup conversation----------
+2025-12-04 15:11:56,828 - ----------End setup conversation----------
+2025-12-04 15:11:56,838 - ----------Start verify conversation----------
+2025-12-04 15:12:08,917 - Verification failed due to: one test failed due to a mismatch in distutils module location, but 903 tests passed, 43 skipped, and 14 expected failures. overall, the environment is correctly set up to run the tests.
+2025-12-04 15:12:08,919 - ----------End verify conversation----------
+2025-12-04 15:12:08,934 - Duration: 0 minutes
+2025-12-04 15:12:08,935 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-916/result.json

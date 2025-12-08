@@ -1,0 +1,30 @@
+2025-12-04 16:36:26,213 - Using language: python
+2025-12-04 16:36:28,249 - Potential files: ['requirements_test_pre_commit.txt', 'README.rst', 'requirements_test.txt', '.github/workflows/ci.yaml', '.github/workflows/codeql-analysis.yml', 'setup.cfg', 'requirements_test_brain.txt', '.github/workflows/release-tests.yml', '.github/workflows/release.yml', '.pre-commit-config.yaml', 'pyproject.toml', 'requirements_test_min.txt', 'tox.ini']
+2025-12-04 16:36:28,251 - Start determine relevance of these files...
+2025-12-04 16:36:28,585 - File: requirements_test_pre_commit.txt - <rel>Yes</rel>
+2025-12-04 16:36:29,142 - File: README.rst - <rel>Yes</rel>
+2025-12-04 16:36:29,968 - File: requirements_test.txt - <rel>Yes</rel>
+2025-12-04 16:36:30,345 - File: .github/workflows/ci.yaml - <rel>Yes</rel>
+2025-12-04 16:36:31,146 - File: .github/workflows/codeql-analysis.yml - <rel>No</rel>
+2025-12-04 16:36:32,069 - File: setup.cfg - <rel>Yes</rel>
+2025-12-04 16:36:32,377 - File: requirements_test_brain.txt - <rel>No</rel>
+2025-12-04 16:36:32,658 - File: .github/workflows/release-tests.yml - <rel>No</rel>
+2025-12-04 16:36:33,192 - File: .github/workflows/release.yml - <rel>No</rel>
+2025-12-04 16:36:33,601 - File: .pre-commit-config.yaml - <rel>No</rel>
+2025-12-04 16:36:34,118 - File: pyproject.toml - <rel>Yes</rel>
+2025-12-04 16:36:34,626 - File: requirements_test_min.txt - <rel>Yes</rel>
+2025-12-04 16:36:35,115 - File: tox.ini - <rel>No</rel>
+2025-12-04 16:36:35,117 - Located related files: ['requirements_test_pre_commit.txt', 'README.rst', 'requirements_test.txt', '.github/workflows/ci.yaml', 'setup.cfg', 'pyproject.toml', 'requirements_test_min.txt']
+2025-12-04 16:36:37,248 - Selected base image: python:3.11
+2025-12-04 16:36:37,251 - Starting bash session in container based on image: python:3.11
+2025-12-04 16:36:42,573 - Session started: <launch.runtime.SetupRuntime object at 0x1143a5b70>
+2025-12-04 16:36:42,601 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-2023/repo
+2025-12-04 16:36:42,601 - Setting up environment for language: python
+2025-12-04 16:36:45,024 - Language-specific server started
+2025-12-04 16:36:45,030 - ----------Start setup conversation----------
+2025-12-04 16:37:12,724 - ----------End setup conversation----------
+2025-12-04 16:37:12,739 - ----------Start verify conversation----------
+2025-12-04 16:37:26,136 - Verification failed due to: one test failed due to a deprecationwarning about pkg_resources, but 1454 tests passed, 71 skipped, and 14 expected failures. overall, the environment is set up correctly.
+2025-12-04 16:37:26,140 - ----------End verify conversation----------
+2025-12-04 16:37:26,148 - Duration: 0 minutes
+2025-12-04 16:37:26,149 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-2023/result.json

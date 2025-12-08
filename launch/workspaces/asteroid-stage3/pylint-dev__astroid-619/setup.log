@@ -1,0 +1,29 @@
+2025-12-04 13:52:13,926 - Using language: python
+2025-12-04 13:52:15,895 - Potential files: ['pylintrc', '.coveragerc', 'README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'doc/conf.py', 'pytest.ini', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 13:52:15,897 - Start determine relevance of these files...
+2025-12-04 13:52:16,540 - File: pylintrc - <rel>No</rel>
+2025-12-04 13:52:16,961 - File: .coveragerc - <rel>No</rel>
+2025-12-04 13:52:17,392 - File: README.rst - <rel>Yes</rel>
+2025-12-04 13:52:17,907 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 13:52:18,184 - File: setup.cfg - <rel>No</rel>
+2025-12-04 13:52:18,785 - File: appveyor.yml - <rel>Yes</rel>
+2025-12-04 13:52:19,707 - File: doc/conf.py - <rel>No</rel>
+2025-12-04 13:52:20,218 - File: pytest.ini - <rel>No</rel>
+2025-12-04 13:52:20,629 - File: setup.py - <rel>Yes</rel>
+2025-12-04 13:52:21,169 - File: .pre-commit-config.yaml - <rel>Yes</rel>
+2025-12-04 13:52:21,644 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 13:52:21,646 - Located related files: ['README.rst', '.travis.yml', 'appveyor.yml', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 13:52:23,605 - Selected base image: python:3.8
+2025-12-04 13:52:23,611 - Starting bash session in container based on image: python:3.8
+2025-12-04 13:52:30,476 - Session started: <launch.runtime.SetupRuntime object at 0x11404d8d0>
+2025-12-04 13:52:30,505 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-619/repo
+2025-12-04 13:52:30,506 - Setting up environment for language: python
+2025-12-04 13:52:32,809 - Language-specific server started
+2025-12-04 13:52:32,814 - ----------Start setup conversation----------
+2025-12-04 13:53:15,916 - ----------End setup conversation----------
+2025-12-04 13:53:15,925 - ----------Start verify conversation----------
+2025-12-04 13:53:23,713 - The setup is successful
+2025-12-04 13:53:23,713 - ----------End verify conversation----------
+2025-12-04 13:53:23,720 - Duration: 1 minutes
+2025-12-04 13:53:23,721 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-619/result.json
+2025-12-04 13:53:23,911 - Setup completed successfully, now commit into swebench image.

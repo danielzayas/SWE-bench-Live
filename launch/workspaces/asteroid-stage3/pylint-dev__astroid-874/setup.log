@@ -1,0 +1,22 @@
+2025-12-04 20:51:46,636 - Using language: python
+2025-12-04 20:51:50,148 - Potential files: ['.github/PULL_REQUEST_TEMPLATE.md', 'pytest.ini', '.github/ISSUE_TEMPLATE.md', 'appveyor.yml', 'pylintrc', 'setup.py', 'README.rst', '.travis.yml', 'tox.ini']
+2025-12-04 20:51:50,150 - Start determine relevance of these files...
+2025-12-04 20:51:50,623 - File: .github/PULL_REQUEST_TEMPLATE.md - <rel>No</rel>
+2025-12-04 20:51:51,441 - File: pytest.ini - <rel>No</rel>
+2025-12-04 20:51:51,851 - File: .github/ISSUE_TEMPLATE.md - <rel>No</rel>
+2025-12-04 20:51:52,662 - File: appveyor.yml - <rel>Yes</rel>
+2025-12-04 20:51:53,004 - File: pylintrc - <rel>No</rel>
+2025-12-04 20:51:53,440 - File: setup.py - <rel>Yes</rel>
+2025-12-04 20:51:54,344 - File: README.rst - <rel>Yes</rel>
+2025-12-04 20:51:54,780 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 20:51:55,214 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 20:51:55,215 - Located related files: ['appveyor.yml', 'setup.py', 'README.rst', '.travis.yml', 'tox.ini']
+2025-12-04 20:51:56,949 - Selected base image: python:3.9
+2025-12-04 20:51:56,956 - Starting bash session in container based on image: python:3.9
+2025-12-04 20:52:03,012 - Session started: <launch.runtime.SetupRuntime object at 0x1155df610>
+2025-12-04 20:52:03,038 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-874/repo
+2025-12-04 20:52:03,039 - Setting up environment for language: python
+2025-12-04 20:52:05,541 - Language-specific server started
+2025-12-04 20:52:05,549 - ----------Start setup conversation----------
+2025-12-04 20:52:27,371 - ----------End setup conversation----------
+2025-12-04 20:52:27,384 - ----------Start verify conversation----------

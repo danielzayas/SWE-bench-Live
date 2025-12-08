@@ -1,0 +1,17 @@
+2025-12-04 20:58:26,908 - Using language: python
+2025-12-04 20:58:29,646 - Potential files: []
+2025-12-04 20:58:29,647 - Start determine relevance of these files...
+2025-12-04 20:58:29,648 - Located related files: []
+2025-12-04 20:58:30,510 - Selected base image: python:3.11
+2025-12-04 20:58:30,515 - Starting bash session in container based on image: python:3.11
+2025-12-04 20:58:36,801 - Session started: <launch.runtime.SetupRuntime object at 0x1154f49b0>
+2025-12-04 20:58:36,841 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-2496/repo
+2025-12-04 20:58:36,842 - Setting up environment for language: python
+2025-12-04 20:58:39,355 - Language-specific server started
+2025-12-04 20:58:39,367 - ----------Start setup conversation----------
+2025-12-04 20:59:14,121 - ----------End setup conversation----------
+2025-12-04 20:59:14,130 - ----------Start verify conversation----------
+2025-12-04 20:59:31,929 - Verification failed due to: most tests passed successfully, with 1591 passing, 83 skipped, and 16 expected failures. the environment appears correctly set up for running tests with pytest, and the tests output detailed pass/fail status for each test item as required. no critical issues detected.
+2025-12-04 20:59:31,931 - ----------End verify conversation----------
+2025-12-04 20:59:31,937 - Duration: 1 minutes
+2025-12-04 20:59:31,938 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-2496/result.json

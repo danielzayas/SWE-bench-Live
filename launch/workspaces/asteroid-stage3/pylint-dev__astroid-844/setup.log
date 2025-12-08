@@ -1,0 +1,26 @@
+2025-12-04 14:45:36,613 - Using language: python
+2025-12-04 14:45:38,156 - Potential files: ['README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'pytest.ini', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 14:45:38,158 - Start determine relevance of these files...
+2025-12-04 14:45:40,358 - File: README.rst - <rel>Yes</rel>
+2025-12-04 14:45:40,905 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 14:45:41,309 - File: setup.cfg - <rel>Yes</rel>
+2025-12-04 14:45:41,752 - File: appveyor.yml - <rel>Yes</rel>
+2025-12-04 14:45:42,100 - File: pytest.ini - <rel>No</rel>
+2025-12-04 14:45:42,665 - File: setup.py - <rel>Yes</rel>
+2025-12-04 14:45:42,918 - File: .pre-commit-config.yaml - <rel>Yes</rel>
+2025-12-04 14:45:43,509 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 14:45:43,511 - Located related files: ['README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 14:45:47,016 - Selected base image: python:3.6
+2025-12-04 14:45:47,022 - Starting bash session in container based on image: python:3.6
+2025-12-04 14:45:55,433 - Session started: <launch.runtime.SetupRuntime object at 0x113dde580>
+2025-12-04 14:45:55,452 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-844/repo
+2025-12-04 14:45:55,452 - Setting up environment for language: python
+2025-12-04 14:45:57,666 - Language-specific server started
+2025-12-04 14:45:57,672 - ----------Start setup conversation----------
+2025-12-04 14:46:27,515 - ----------End setup conversation----------
+2025-12-04 14:46:27,527 - ----------Start verify conversation----------
+2025-12-04 14:58:47,266 - The setup is successful
+2025-12-04 14:58:47,270 - ----------End verify conversation----------
+2025-12-04 14:58:47,285 - Duration: 13 minutes
+2025-12-04 14:58:47,286 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-844/result.json
+2025-12-04 14:58:47,546 - Setup completed successfully, now commit into swebench image.

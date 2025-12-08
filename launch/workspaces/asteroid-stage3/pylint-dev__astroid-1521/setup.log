@@ -1,0 +1,9 @@
+2025-12-04 20:46:21,916 - Using language: python
+2025-12-04 20:48:52,215 - Base image missing from state, defaulting to python:3.11 for language python
+2025-12-04 20:48:52,217 - Starting bash session in container based on image: python:3.11
+2025-12-04 20:48:58,380 - Session started: <launch.runtime.SetupRuntime object at 0x11538af90>
+2025-12-04 20:48:58,400 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-1521/repo
+2025-12-04 20:48:58,401 - Setting up environment for language: python
+2025-12-04 20:49:00,969 - Language-specific server started
+2025-12-04 20:49:00,973 - ----------Start setup conversation----------
+2025-12-04 20:49:51,654 - ----------End setup conversation----------

@@ -1,0 +1,25 @@
+2025-12-04 13:41:41,935 - Using language: python
+2025-12-04 13:41:43,140 - Potential files: ['pylintrc', 'README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'doc/conf.py', 'setup.py', 'tox.ini']
+2025-12-04 13:41:43,141 - Start determine relevance of these files...
+2025-12-04 13:41:43,754 - File: pylintrc - <rel>No</rel>
+2025-12-04 13:41:44,065 - File: README.rst - <rel>Yes</rel>
+2025-12-04 13:41:44,369 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 13:41:44,748 - File: setup.cfg - <rel>No</rel>
+2025-12-04 13:41:45,102 - File: appveyor.yml - <rel>Yes</rel>
+2025-12-04 13:41:45,591 - File: doc/conf.py - <rel>No</rel>
+2025-12-04 13:41:46,109 - File: setup.py - <rel>Yes</rel>
+2025-12-04 13:41:46,415 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 13:41:46,416 - Located related files: ['README.rst', '.travis.yml', 'appveyor.yml', 'setup.py', 'tox.ini']
+2025-12-04 13:41:49,106 - Selected base image: python:3.7
+2025-12-04 13:41:49,112 - Starting bash session in container based on image: python:3.7
+2025-12-04 13:41:55,458 - Session started: <launch.runtime.SetupRuntime object at 0x113ad02b0>
+2025-12-04 13:41:55,492 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-489/repo
+2025-12-04 13:41:55,493 - Setting up environment for language: python
+2025-12-04 13:41:57,690 - Language-specific server started
+2025-12-04 13:41:57,693 - ----------Start setup conversation----------
+2025-12-04 13:42:23,700 - ----------End setup conversation----------
+2025-12-04 13:42:23,711 - ----------Start verify conversation----------
+2025-12-04 13:42:31,692 - Verification failed due to: many tests failed with errors (258 errors out of 520 tests), including runtimeerror: generator raised stopiteration. several tests are skipped due to missing optional dependencies (attr, dateutil, nose, pytest, numpy). the environment is partially set up but has significant issues causing test failures.
+2025-12-04 13:42:31,694 - ----------End verify conversation----------
+2025-12-04 13:42:31,705 - Duration: 0 minutes
+2025-12-04 13:42:31,709 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-489/result.json

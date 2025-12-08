@@ -1,0 +1,29 @@
+2025-12-04 15:21:12,192 - Using language: python
+2025-12-04 15:21:14,406 - Potential files: ['doc/requirements.txt', 'README.rst', '.github/workflows/ci.yaml', 'setup.cfg', 'requirements_minimal.txt', 'doc/Makefile', 'requirements_dev.txt', '.github/workflows/release.yml', 'pyproject.toml', 'requirements_full.txt', 'tox.ini']
+2025-12-04 15:21:14,408 - Start determine relevance of these files...
+2025-12-04 15:21:14,879 - File: doc/requirements.txt - <rel>No</rel>
+2025-12-04 15:21:15,295 - File: README.rst - <rel>Yes</rel>
+2025-12-04 15:21:16,366 - File: .github/workflows/ci.yaml - <rel>No</rel>
+2025-12-04 15:21:16,605 - File: setup.cfg - <rel>No</rel>
+2025-12-04 15:21:17,125 - File: requirements_minimal.txt - <rel>Yes</rel>
+2025-12-04 15:21:17,407 - File: doc/Makefile - <rel>No</rel>
+2025-12-04 15:21:17,781 - File: requirements_dev.txt - <rel>Yes</rel>
+2025-12-04 15:21:18,133 - File: .github/workflows/release.yml - <rel>No</rel>
+2025-12-04 15:21:18,488 - File: pyproject.toml - <rel>Yes</rel>
+2025-12-04 15:21:18,775 - File: requirements_full.txt - <rel>Yes</rel>
+2025-12-04 15:21:19,053 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 15:21:19,054 - Located related files: ['README.rst', 'requirements_minimal.txt', 'requirements_dev.txt', 'pyproject.toml', 'requirements_full.txt', 'tox.ini']
+2025-12-04 15:21:21,030 - Selected base image: python:3.8
+2025-12-04 15:21:21,034 - Starting bash session in container based on image: python:3.8
+2025-12-04 15:21:27,935 - Session started: <launch.runtime.SetupRuntime object at 0x113e58c90>
+2025-12-04 15:21:27,967 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-1173/repo
+2025-12-04 15:21:27,967 - Setting up environment for language: python
+2025-12-04 15:21:30,063 - Language-specific server started
+2025-12-04 15:21:30,067 - ----------Start setup conversation----------
+2025-12-04 15:22:06,960 - ----------End setup conversation----------
+2025-12-04 15:22:06,981 - ----------Start verify conversation----------
+2025-12-04 15:22:19,481 - The setup is successful
+2025-12-04 15:22:19,482 - ----------End verify conversation----------
+2025-12-04 15:22:19,496 - Duration: 1 minutes
+2025-12-04 15:22:19,498 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-1173/result.json
+2025-12-04 15:22:19,688 - Setup completed successfully, now commit into swebench image.

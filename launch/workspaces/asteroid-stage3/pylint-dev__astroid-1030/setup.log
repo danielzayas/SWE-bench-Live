@@ -1,0 +1,31 @@
+2025-12-04 15:22:21,020 - Using language: python
+2025-12-04 15:22:23,421 - Potential files: ['pylintrc', 'requirements_test_min.txt', 'README.rst', 'requirements_test.txt', '.coveragerc', '.flake8', '.github/workflows/ci.yaml', 'setup.cfg', 'requirements_test_brain.txt', '.readthedocs.yaml', 'setup.py', '.pre-commit-config.yaml', 'requirements_test_pre_commit.txt', 'tox.ini']
+2025-12-04 15:22:23,423 - Start determine relevance of these files...
+2025-12-04 15:22:23,910 - File: pylintrc - <rel>No</rel>
+2025-12-04 15:22:24,716 - File: requirements_test_min.txt - <rel>Yes</rel>
+2025-12-04 15:22:25,316 - File: README.rst - <rel>Yes</rel>
+2025-12-04 15:22:25,825 - File: requirements_test.txt - <rel>Yes</rel>
+2025-12-04 15:22:26,304 - File: .coveragerc - <rel>No</rel>
+2025-12-04 15:22:26,742 - File: .flake8 - <rel>No</rel>
+2025-12-04 15:22:27,124 - File: .github/workflows/ci.yaml - <rel>Yes</rel>
+2025-12-04 15:22:27,645 - File: setup.cfg - <rel>Yes</rel>
+2025-12-04 15:22:27,929 - File: requirements_test_brain.txt - <rel>Yes</rel>
+2025-12-04 15:22:29,066 - File: .readthedocs.yaml - <rel>No</rel>
+2025-12-04 15:22:29,422 - File: setup.py - <rel>No</rel>
+2025-12-04 15:22:29,776 - File: .pre-commit-config.yaml - <rel>No</rel>
+2025-12-04 15:22:30,098 - File: requirements_test_pre_commit.txt - <rel>Yes</rel>
+2025-12-04 15:22:30,523 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 15:22:30,524 - Located related files: ['requirements_test_min.txt', 'README.rst', 'requirements_test.txt', '.github/workflows/ci.yaml', 'setup.cfg', 'requirements_test_brain.txt', 'requirements_test_pre_commit.txt', 'tox.ini']
+2025-12-04 15:22:34,431 - Selected base image: python:3.10
+2025-12-04 15:22:34,437 - Starting bash session in container based on image: python:3.10
+2025-12-04 15:22:40,338 - Session started: <launch.runtime.SetupRuntime object at 0x114806c80>
+2025-12-04 15:22:40,361 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-1030/repo
+2025-12-04 15:22:40,361 - Setting up environment for language: python
+2025-12-04 15:22:42,750 - Language-specific server started
+2025-12-04 15:22:42,755 - ----------Start setup conversation----------
+2025-12-04 15:23:51,896 - ----------End setup conversation----------
+2025-12-04 15:23:51,913 - ----------Start verify conversation----------
+2025-12-04 15:24:04,916 - Verification failed due to: one test failed due to distutils module location mismatch, but 992 tests passed, 37 skipped, and 10 expected failures. overall, the environment is correctly set up for running tests.
+2025-12-04 15:24:04,917 - ----------End verify conversation----------
+2025-12-04 15:24:04,932 - Duration: 1 minutes
+2025-12-04 15:24:04,934 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-1030/result.json

@@ -1,0 +1,31 @@
+2025-12-04 13:58:21,922 - Using language: python
+2025-12-04 13:58:24,173 - Potential files: ['doc/requirements.txt', '.github/workflows/codeql-analysis.yml', 'README.rst', '.github/workflows/ci.yaml', 'setup.cfg', 'requirements_minimal.txt', 'doc/Makefile', '.github/workflows/release-tests.yml', 'requirements_dev.txt', '.github/workflows/release.yml', 'pyproject.toml', 'requirements_full.txt', 'tox.ini']
+2025-12-04 13:58:24,175 - Start determine relevance of these files...
+2025-12-04 13:58:24,520 - File: doc/requirements.txt - <rel>No</rel>
+2025-12-04 13:58:25,072 - File: .github/workflows/codeql-analysis.yml - <rel>No</rel>
+2025-12-04 13:58:26,203 - File: README.rst - <rel>Yes</rel>
+2025-12-04 13:58:26,711 - File: .github/workflows/ci.yaml - <rel>Yes</rel>
+2025-12-04 13:58:27,020 - File: setup.cfg - <rel>No</rel>
+2025-12-04 13:58:27,532 - File: requirements_minimal.txt - <rel>No</rel>
+2025-12-04 13:58:28,585 - File: doc/Makefile - <rel>No</rel>
+2025-12-04 13:58:29,171 - File: .github/workflows/release-tests.yml - <rel>No</rel>
+2025-12-04 13:58:29,783 - File: requirements_dev.txt - <rel>Yes</rel>
+2025-12-04 13:58:30,122 - File: .github/workflows/release.yml - <rel>No</rel>
+2025-12-04 13:58:30,547 - File: pyproject.toml - <rel>Yes</rel>
+2025-12-04 13:58:30,876 - File: requirements_full.txt - <rel>Yes</rel>
+2025-12-04 13:58:31,742 - File: tox.ini - <rel>No</rel>
+2025-12-04 13:58:31,743 - Located related files: ['README.rst', '.github/workflows/ci.yaml', 'requirements_dev.txt', 'pyproject.toml', 'requirements_full.txt']
+2025-12-04 13:58:33,829 - Selected base image: python:3.11
+2025-12-04 13:58:33,848 - Starting bash session in container based on image: python:3.11
+2025-12-04 13:58:39,337 - Session started: <launch.runtime.SetupRuntime object at 0x113a3a570>
+2025-12-04 13:58:39,369 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-2171/repo
+2025-12-04 13:58:39,369 - Setting up environment for language: python
+2025-12-04 13:58:41,498 - Language-specific server started
+2025-12-04 13:58:41,509 - ----------Start setup conversation----------
+2025-12-04 13:59:22,858 - ----------End setup conversation----------
+2025-12-04 13:59:22,886 - ----------Start verify conversation----------
+2025-12-04 13:59:34,196 - The setup is successful
+2025-12-04 13:59:34,196 - ----------End verify conversation----------
+2025-12-04 13:59:34,211 - Duration: 1 minutes
+2025-12-04 13:59:34,212 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-2171/result.json
+2025-12-04 13:59:34,366 - Setup completed successfully, now commit into swebench image.

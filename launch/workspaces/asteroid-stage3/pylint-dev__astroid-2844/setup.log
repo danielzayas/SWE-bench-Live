@@ -1,0 +1,24 @@
+2025-12-04 21:15:02,007 - Using language: python
+2025-12-04 21:15:03,067 - Potential files: ['.github/workflows/backport.yml', 'pyproject.toml', 'doc/index.rst', 'tox.ini', 'requirements_minimal.txt', 'requirements_full.txt', 'README.rst', '.github/workflows/ci.yaml', '.github/workflows/release.yml', 'requirements_dev.txt', '.github/DEPENDABOT.yml']
+2025-12-04 21:15:03,069 - Start determine relevance of these files...
+2025-12-04 21:15:03,886 - File: .github/workflows/backport.yml - <rel>No</rel>
+2025-12-04 21:15:05,136 - File: pyproject.toml - <rel>No</rel>
+2025-12-04 21:15:05,388 - File: doc/index.rst - <rel>No</rel>
+2025-12-04 21:15:05,726 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 21:15:06,500 - File: requirements_minimal.txt - <rel>No</rel>
+2025-12-04 21:15:06,762 - File: requirements_full.txt - <rel>Yes</rel>
+2025-12-04 21:15:07,056 - File: README.rst - <rel>Yes</rel>
+2025-12-04 21:15:07,367 - File: .github/workflows/ci.yaml - <rel>No</rel>
+2025-12-04 21:15:07,982 - File: .github/workflows/release.yml - <rel>No</rel>
+2025-12-04 21:15:08,495 - File: requirements_dev.txt - <rel>Yes</rel>
+2025-12-04 21:15:08,800 - File: .github/DEPENDABOT.yml - <rel>No</rel>
+2025-12-04 21:15:08,802 - Located related files: ['tox.ini', 'requirements_full.txt', 'README.rst', 'requirements_dev.txt']
+2025-12-04 21:15:10,949 - Selected base image: python:3.11
+2025-12-04 21:15:10,953 - Starting bash session in container based on image: python:3.11
+2025-12-04 21:15:16,514 - Session started: <launch.runtime.SetupRuntime object at 0x11641ee40>
+2025-12-04 21:15:16,550 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-2844/repo
+2025-12-04 21:15:16,551 - Setting up environment for language: python
+2025-12-04 21:15:19,271 - Language-specific server started
+2025-12-04 21:15:19,281 - ----------Start setup conversation----------
+2025-12-04 21:16:16,898 - ----------End setup conversation----------
+2025-12-04 21:16:16,911 - ----------Start verify conversation----------

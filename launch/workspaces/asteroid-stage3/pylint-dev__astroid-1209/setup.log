@@ -1,0 +1,34 @@
+2025-12-04 15:34:00,902 - Using language: python
+2025-12-04 15:34:04,947 - Potential files: ['.coveragerc', 'requirements_test_min.txt', 'README.rst', 'requirements_test.txt', '.flake8', '.github/workflows/ci.yaml', '.github/workflows/codeql-analysis.yml', 'setup.cfg', 'requirements_test_brain.txt', 'doc/conf.py', '.readthedocs.yaml', '.github/workflows/release.yml', 'setup.py', '.pre-commit-config.yaml', 'requirements_test_pre_commit.txt', 'tox.ini']
+2025-12-04 15:34:04,949 - Start determine relevance of these files...
+2025-12-04 15:34:05,243 - File: .coveragerc - <rel>No</rel>
+2025-12-04 15:34:05,533 - File: requirements_test_min.txt - <rel>Yes</rel>
+2025-12-04 15:34:06,006 - File: README.rst - <rel>Yes</rel>
+2025-12-04 15:34:07,708 - File: requirements_test.txt - <rel>Yes</rel>
+2025-12-04 15:34:08,086 - File: .flake8 - <rel>No</rel>
+2025-12-04 15:34:08,414 - File: .github/workflows/ci.yaml - <rel>Yes</rel>
+2025-12-04 15:34:08,980 - File: .github/workflows/codeql-analysis.yml - <rel>No</rel>
+2025-12-04 15:34:09,569 - File: setup.cfg - <rel>Yes</rel>
+2025-12-04 15:34:09,914 - File: requirements_test_brain.txt - <rel>No</rel>
+2025-12-04 15:34:10,379 - File: doc/conf.py - <rel>No</rel>
+2025-12-04 15:34:10,939 - File: .readthedocs.yaml - <rel>No</rel>
+2025-12-04 15:34:11,787 - File: .github/workflows/release.yml - <rel>No</rel>
+2025-12-04 15:34:12,204 - File: setup.py - <rel>Yes</rel>
+2025-12-04 15:34:12,620 - File: .pre-commit-config.yaml - <rel>No</rel>
+2025-12-04 15:34:13,088 - File: requirements_test_pre_commit.txt - <rel>Yes</rel>
+2025-12-04 15:34:13,577 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 15:34:13,578 - Located related files: ['requirements_test_min.txt', 'README.rst', 'requirements_test.txt', '.github/workflows/ci.yaml', 'setup.cfg', 'setup.py', 'requirements_test_pre_commit.txt', 'tox.ini']
+2025-12-04 15:34:16,158 - Selected base image: python:3.10
+2025-12-04 15:34:16,162 - Starting bash session in container based on image: python:3.10
+2025-12-04 15:34:21,854 - Session started: <launch.runtime.SetupRuntime object at 0x113ddf0e0>
+2025-12-04 15:34:21,880 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-1209/repo
+2025-12-04 15:34:21,881 - Setting up environment for language: python
+2025-12-04 15:34:24,214 - Language-specific server started
+2025-12-04 15:34:24,218 - ----------Start setup conversation----------
+2025-12-04 15:35:07,833 - ----------End setup conversation----------
+2025-12-04 15:35:07,845 - ----------Start verify conversation----------
+2025-12-04 15:35:27,763 - The setup is successful
+2025-12-04 15:35:27,765 - ----------End verify conversation----------
+2025-12-04 15:35:27,778 - Duration: 1 minutes
+2025-12-04 15:35:27,779 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-1209/result.json
+2025-12-04 15:35:28,057 - Setup completed successfully, now commit into swebench image.

@@ -1,0 +1,27 @@
+2025-12-04 13:57:27,207 - Using language: python
+2025-12-04 13:57:28,549 - Potential files: ['pylintrc', 'README.rst', '.travis.yml', 'setup.cfg', 'appveyor.yml', 'pytest.ini', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 13:57:28,551 - Start determine relevance of these files...
+2025-12-04 13:57:28,934 - File: pylintrc - <rel>No</rel>
+2025-12-04 13:57:29,472 - File: README.rst - <rel>Yes</rel>
+2025-12-04 13:57:29,879 - File: .travis.yml - <rel>Yes</rel>
+2025-12-04 13:57:30,775 - File: setup.cfg - <rel>No</rel>
+2025-12-04 13:57:31,522 - File: appveyor.yml - <rel>No</rel>
+2025-12-04 13:57:31,885 - File: pytest.ini - <rel>No</rel>
+2025-12-04 13:57:32,336 - File: setup.py - <rel>Yes</rel>
+2025-12-04 13:57:32,853 - File: .pre-commit-config.yaml - <rel>Yes</rel>
+2025-12-04 13:57:33,274 - File: tox.ini - <rel>Yes</rel>
+2025-12-04 13:57:33,274 - Located related files: ['README.rst', '.travis.yml', 'setup.py', '.pre-commit-config.yaml', 'tox.ini']
+2025-12-04 13:57:35,408 - Selected base image: python:3.6
+2025-12-04 13:57:35,413 - Starting bash session in container based on image: python:3.6
+2025-12-04 13:57:41,332 - Session started: <launch.runtime.SetupRuntime object at 0x113b49250>
+2025-12-04 13:57:41,360 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-667/repo
+2025-12-04 13:57:41,361 - Setting up environment for language: python
+2025-12-04 13:57:43,304 - Language-specific server started
+2025-12-04 13:57:43,307 - ----------Start setup conversation----------
+2025-12-04 13:58:14,118 - ----------End setup conversation----------
+2025-12-04 13:58:14,130 - ----------Start verify conversation----------
+2025-12-04 13:58:20,469 - The setup is successful
+2025-12-04 13:58:20,470 - ----------End verify conversation----------
+2025-12-04 13:58:20,484 - Duration: 0 minutes
+2025-12-04 13:58:20,485 - Result saved to: launch/workspaces/asteroid-stage3/pylint-dev__astroid-667/result.json
+2025-12-04 13:58:20,702 - Setup completed successfully, now commit into swebench image.

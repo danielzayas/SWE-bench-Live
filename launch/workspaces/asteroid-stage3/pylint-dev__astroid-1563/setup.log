@@ -1,0 +1,13 @@
+2025-12-04 20:53:38,708 - Using language: python
+2025-12-04 20:53:43,265 - Potential files: []
+2025-12-04 20:53:43,266 - Start determine relevance of these files...
+2025-12-04 20:53:43,268 - Located related files: []
+2025-12-04 20:53:44,085 - Selected base image: python:3.11
+2025-12-04 20:53:44,090 - Starting bash session in container based on image: python:3.11
+2025-12-04 20:53:49,674 - Session started: <launch.runtime.SetupRuntime object at 0x1159c42b0>
+2025-12-04 20:53:49,708 - Repo root in the host cleaned up: /Users/danielzayas/Development/SWE-bench/SWE-bench-Live/launch/workspaces/asteroid-stage3/pylint-dev__astroid-1563/repo
+2025-12-04 20:53:49,709 - Setting up environment for language: python
+2025-12-04 20:53:52,055 - Language-specific server started
+2025-12-04 20:53:52,061 - ----------Start setup conversation----------
+2025-12-04 20:54:33,689 - ----------End setup conversation----------
+2025-12-04 20:54:33,699 - ----------Start verify conversation----------
