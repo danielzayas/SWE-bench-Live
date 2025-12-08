@@ -30,6 +30,7 @@ def processing_one_instance(instance: dict):
 
 
 def iter_instances_from_dir(root: Path) -> Iterator[dict]:
+    """Iterate over instance directories yielding valid records."""
     for instance_path in root.rglob("instance.json"):
         try:
             with instance_path.open(encoding="utf-8") as fp:
@@ -38,11 +39,12 @@ def iter_instances_from_dir(root: Path) -> Iterator[dict]:
             print(f"Skipping {instance_path}: {err}")
             continue
 
-        if dct.get("FAIL_TO_PASS") and dct.get("PASS_TO_PASS"):
+        if dct.get("FAIL_TO_PASS"):
             yield dct
 
 
 def iter_instances_from_jsonl(path: Path) -> Iterator[dict]:
+    """Yield valid records from a JSONL export."""
     with path.open(encoding="utf-8") as fp:
         for line_no, line in enumerate(fp, 1):
             line = line.strip()
@@ -53,11 +55,15 @@ def iter_instances_from_jsonl(path: Path) -> Iterator[dict]:
             except json.JSONDecodeError as err:
                 print(f"Skipping line {line_no} in {path}: {err}")
                 continue
-            if dct.get("FAIL_TO_PASS") and dct.get("PASS_TO_PASS"):
+            if dct.get("FAIL_TO_PASS"):
                 yield dct
 
 
 def main() -> None:
+    """
+    CLI entrypoint for reading a JSONL file or directory of instance.json files 
+    and writing dataset JSONL file output.
+    """
     parser = argparse.ArgumentParser(description="Collect valid instances to create full dataset")
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument(
