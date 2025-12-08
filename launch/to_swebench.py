@@ -44,12 +44,21 @@ def main(
     """
     Convert validated instances to SWE-bench format.
 
+    `launch/to_swebench.py` simply walks whatever instance_root you point it at and 
+    emits every instance.json whose corresponding result.json says "completed": true. 
+    When it's run with `--instance_root` (required, e.g. `launch/workspaces/some-directory/`) 
+    and without `--result_root` (optional), the former must contain both `instance.json` 
+    and `result.json` files.
+
     Args:
-        instance_root: Directory containing the up-to-date instance.json files
-            (e.g., logs/run_evaluation/<run_id>/some-directory/).
+        instance_root: Directory containing the up-to-date instance.json files. This may be a
+            pre-validation directory (e.g. `launch/workspaces/<run_id>/`) or a post-validation`
+            directory (e.g., `logs/run_evaluation/<run_id>/some-directory/`).
         output_jsonl: Destination file for the combined JSONL.
         result_root: optional directory containing workspaces with result.json files
             (e.g., launch/workspaces/<run_id>/). Defaults to instance_root if not set.
+            Used to collect the 'test_cmds' and 'log_parser' from the result.json files.
+            Typically, this is a pre-validation directory.
     """
     instance_root = Path(instance_root)
     result_root = Path(result_root) if result_root else None
@@ -64,7 +73,9 @@ def main(
             continue
 
         swe_instance = {
+            # 'instance.json' fields
             **instance,
+            # 'test_cmds' and 'log_parser' from the result.json files
             "test_cmds": normalize_test_cmds(result.get("test_commands")),
             "log_parser": result.get("log_parser", "pytest"),
         }

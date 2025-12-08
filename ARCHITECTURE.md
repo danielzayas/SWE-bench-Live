@@ -275,7 +275,7 @@ The `AgentState` (defined in `launch/agent/state.py`) tracks:
 - Before launching RepoLaunch again, run `python curation/filter_timeouts.py --output curation/output/raw_tasks.filtered.jsonl` and use the filtered JSONL when generating the Stage 3 manifest.
 - This prevents repeatedly attempting instances that are known to exceed the time budget.
 
-**Export**: `launch/to_swebench.py` converts RepoLaunch results to SWE-bench-Live instance format
+**Export**: `launch/to_swebench.py` converts RepoLaunch results to SWE-bench-Live instance format. This JSONL file reflects the initial `instance.json` that RepoLaunch captured—before validation.
 
 ### Stage 4: Validation
 
@@ -335,7 +335,7 @@ def get_p2p_f2p(pre_test_map, post_test_map):
 
 **Output**: 
 - Validation logs with test results for each instance, including `pre_test_map.json` and `post_test_map.json`, plus the **updated** `instance.json` (with FAIL_TO_PASS/PASS_TO_PASS) in `logs/run_evaluation/{run_id}/gold-stage3/<instance_id>/`.
-- `launch/to_swebench.py --instance_root logs/run_evaluation/{run_id}/gold-stage3 --result_root launch/workspaces/{stage3_run_id}` merges the Stage 4 `instance.json` files with the Stage 3 `result.json` metadata and emits the final SWE-bench-Live JSONL (e.g., `gold/{run_id}.jsonl`).
+- Run `launch/to_swebench.py`. For example, `launch/to_swebench.py --instance_root logs/run_evaluation/{run_id}/gold-stage3 --result_root launch/workspaces/{stage3_run_id}` merges the Stage 4 `instance.json` files with the Stage 3 `result.json` metadata and emits the final SWE-bench-Live JSONL (e.g., `gold/{run_id}.jsonl`). 
 
 ### Stage 5: Dataset Production
 
