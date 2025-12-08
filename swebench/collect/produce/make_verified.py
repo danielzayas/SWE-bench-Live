@@ -80,6 +80,11 @@ def main() -> None:
         help="The model version, such as o3-20250416",
     )
     parser.add_argument(
+        "--print-tests",
+        action="store_true",
+        help="Print extracted test snippets before invoking the verifier",
+    )
+    parser.add_argument(
         "--start-month",
         type=str,
         help="Earliest month to **include** (format YYYY-MM, e.g. 2024-12)",
@@ -111,7 +116,7 @@ def main() -> None:
         raise SystemExit(f"Input file {args.input_file} does not exist")
     samples = load_by_month(args.input_file, start_bound, end_bound)
 
-    verifier = Verifier(args.provider, args.model)
+    verifier = Verifier(args.provider, args.model, print_tests=args.print_tests)
     records = verifier.analyse_all(samples)
     retain_id = [record["instance_id"] for record in records if record["category"] == "7"]
     subset = [sample for sample in samples if sample["instance_id"] in retain_id]

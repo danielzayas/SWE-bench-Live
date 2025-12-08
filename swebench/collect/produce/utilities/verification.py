@@ -14,8 +14,9 @@ import shutil
 REPO_ROOT = pathlib.Path("repos")
 
 class Verifier:
-    def __init__(self, llm_provider, model):
+    def __init__(self, llm_provider, model, print_tests: bool = False):
         self.llm = LLMProvider(llm_provider, model)
+        self.print_tests = print_tests
     
     def prompt(self, description: str, test_case: list[tuple[str, str]], gold_patch: str) -> str:
         test_case_prompt = "\n===================================\n".join([f"{i[0]}:\n{i[1]}" for i in test_case])
@@ -87,7 +88,9 @@ class Verifier:
         description = row['problem_statement'] # currently row['hints_text'] should not be seen by agents
         test_case_path = row["FAIL_TO_PASS"]
         test_case = get_testcase(instance_id, repo_id, commit, test_case_path, test_patch)
-        [print(i[0], i[1][:2000], i[1][-500:], sep = "\n") for i in test_case]
+        if self.print_tests:
+            for selector, snippet in test_case:
+                print(selector, snippet[:2000], snippet[-500:], sep="\n")
         category, reasoning = self.answer(description, test_case, gold_patch)
         return {
             "instance_id": instance_id,
