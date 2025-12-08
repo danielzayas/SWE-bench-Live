@@ -95,6 +95,14 @@ def get_p2p_f2p(
     return pass2pass, fail2pass
 
 
+def is_validated_instance(fail2pass: list[str]) -> bool:
+    """
+    Accept instances with at least one FAIL_TO_PASS test. 
+    Note that 1+ PASS_TO_PASS tests are not required.
+    """
+    return bool(fail2pass)
+
+
 
 def run_instance(
     instance: dict,
@@ -267,6 +275,9 @@ def run_instance(
             logger.info(f"Post test map for {instance_id} written to {f.name}")
 
         pass2pass, fail2pass = get_p2p_f2p(pre_test_map, post_test_map)
+        if not is_validated_instance(fail2pass):
+            logger.info("Skipping %s: no FAIL_TO_PASS tests discovered.", instance_id)
+            return
 
         with open(log_dir / "instance.json", "w") as f:
             json.dump(
