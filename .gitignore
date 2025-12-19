@@ -443,3 +443,6 @@ MANIFEST
 **/.env
 **/tokens.txt
 **/*config.json
+
+# discussions directory
+discussions/
